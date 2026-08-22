@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bindPos();
   updatePosUI();
   bindReceiptModal();
+  $('#btnPrintQr')?.addEventListener('click', () => window.print());
 
   // Tutup modal dengan Esc
   document.addEventListener('keydown', (e) => {
@@ -40,10 +41,31 @@ function bindTabs() {
     $('#view-' + view).classList.add('active');
     if (view === 'riwayat') renderRiwayat();
     if (view === 'menu') renderMenuManage();
+    if (view === 'qr') renderQr();
   };
   $$('.tab-btn[data-view]').forEach((btn) => {
     btn.addEventListener('click', () => showView(btn.dataset.view));
   });
+}
+
+// ---------- QR MEJA ----------
+function renderQr() {
+  const grid = $('#qrGrid');
+  if (!grid || grid.dataset.rendered) return;
+  const n = CONFIG.jumlahMeja || 10;
+  let html = '';
+  for (let i = 1; i <= n; i++) {
+    const url = CONFIG.mejaUrl(i);
+    const qr = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=${encodeURIComponent(url)}`;
+    html += `
+      <div class="qr-card">
+        <img src="${qr}" alt="QR Meja ${i}" loading="lazy" width="120" height="120" />
+        <div class="qr-no">Meja ${i}</div>
+        <div class="qr-url">${url}</div>
+      </div>`;
+  }
+  grid.innerHTML = html;
+  grid.dataset.rendered = '1';
 }
 
 // ---------- GRID MENU KASIR ----------

@@ -19,4 +19,12 @@ const CONFIG = {
     url: 'https://lnxprlvmyhqxkzarrzac.supabase.co',
     key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxueHBybHZteWhxeGt6YXJyemFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MDAwMDIsImV4cCI6MjEwMjk3NjAwMn0.fb4njNTFQZMcZPuvHE96i8zfX7CXCTGVN10A6wYDZUs',
   },
+  // Jumlah meja untuk fitur QR code (kasir → pelanggan scan di meja)
+  jumlahMeja: 10,
+};
+
+// URL katalog dengan nomor meja (untuk QR code)
+CONFIG.mejaUrl = (no) => {
+  const base = location.origin + location.pathname.replace(/kasir\.html$/, 'index.html');
+  return `${base}?meja=${no}`;
 };

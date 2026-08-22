@@ -24,6 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#footAlamat').textContent = CONFIG.alamat;
   $('#footJam').textContent = CONFIG.jamBuka;
 
+  // QR meja: jika dibuka via ?meja=N, tampilkan badge & simpan ke state
+  const mejaParam = new URLSearchParams(location.search).get('meja');
+  if (mejaParam && /^\d+$/.test(mejaParam)) {
+    state.meja = mejaParam;
+    const badge = $('#mejaBadge');
+    $('#mejaNo').textContent = mejaParam;
+    badge.hidden = false;
+  }
+
   renderChips();
   renderMenu();
   updateCartBar();
@@ -296,6 +305,7 @@ function submitOrder(e) {
   lines.push('');
   lines.push(`Nama: ${nama}`);
   lines.push(`Sajian: ${state.orderType}`);
+  if (state.meja) lines.push(`Meja: ${state.meja}`);
   if (catatan) lines.push(`Catatan: ${catatan}`);
 
   const url = `https://wa.me/${CONFIG.waNomor}?text=${encodeURIComponent(lines.join('\n'))}`;

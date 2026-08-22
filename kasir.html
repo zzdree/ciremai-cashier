@@ -25,6 +25,7 @@
         <button class="tab-btn active" data-view="kasir">🛒 Transaksi</button>
         <button class="tab-btn" data-view="riwayat">📜 Riwayat</button>
         <button class="tab-btn" data-view="menu">📋 Menu</button>
+        <button class="tab-btn" data-view="qr">🔳 QR Meja</button>
         <a class="tab-btn" href="index.html" style="text-decoration:none;">🏠 Katalog</a>
       </nav>
     </div>
@@ -111,6 +112,20 @@
         </p>
       </div>
       <div id="menuManageList"></div>
+    </div>
+  </section>
+
+  <!-- ============ VIEW: QR MEJA ============ -->
+  <section class="view" id="view-qr" style="max-width:900px;margin:0 auto;padding:20px;">
+    <div class="panel">
+      <div class="panel-pad" style="border-bottom:1.5px solid var(--line);">
+        <h2 style="font-size:1.15rem;">🔳 Cetak QR Code Meja</h2>
+        <p style="font-size:.84rem;color:var(--ink-soft);margin-top:4px;">
+          Tempel di tiap meja. Pelanggan scan → langsung buka menu & nomor meja otomatis masuk ke pesanan WhatsApp.
+        </p>
+        <button class="btn-secondary" id="btnPrintQr" style="margin-top:12px;width:auto;padding:10px 18px;">🖨️ Cetak Semua QR</button>
+      </div>
+      <div class="qr-grid" id="qrGrid"></div>
     </div>
   </section>
 
