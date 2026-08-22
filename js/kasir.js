@@ -107,19 +107,6 @@ function bindTabs() {
   $$('.tab-btn[data-view]').forEach((btn) => {
     btn.addEventListener('click', () => showView(btn.dataset.view));
   });
-
-  // Toggle suara notif order baru
-  const muteBtn = $('#btnMute');
-  if (muteBtn) {
-    const syncMute = () => { muteBtn.textContent = __muted ? '🔇' : '🔊'; };
-    syncMute();
-    muteBtn.addEventListener('click', () => {
-      __muted = !__muted;
-      localStorage.setItem('ciremai_mute', __muted ? '1' : '0');
-      syncMute();
-      toast(__muted ? 'Suara notif dimatikan 🔇' : 'Suara notif menyala 🔊');
-    });
-  }
 }
 
 // ---------- SOUND: notif order baru ----------

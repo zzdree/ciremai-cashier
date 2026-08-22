@@ -15,19 +15,19 @@ Pelanggan dapat langsung memesan makanan & minuman dari meja via QR code, sement
 
 | Akses Pengguna | Tautan Langsung | Keterangan |
 |---|---|---|
-| 📱 **Pelanggan (Order)** | **[zzdree.github.io/ciremai-cashier/order](https://zzdree.github.io/ciremai-cashier/order)** | Katalog menu, keranjang belanja, deteksi meja otomatis, dan pengiriman pesanan mandiri. |
-| ⚙️ **Pengelola & Kasir (Admin)** | **[zzdree.github.io/ciremai-cashier/admin](https://zzdree.github.io/ciremai-cashier/admin)** | Dashboard POS Kasir, antrean live pesanan, manajemen menu habis, laporan omzet harian, dan cetak QR meja *(PIN default: `9900`)*. |
+| 📱 **Pelanggan (Order)** | <a href="https://zzdree.github.io/ciremai-cashier/order" target="_blank" rel="noopener noreferrer"><b>zzdree.github.io/ciremai-cashier/order</b> ↗</a> | Katalog menu, keranjang belanja, deteksi meja otomatis, dan pengiriman pesanan mandiri. |
+| ⚙️ **Pengelola & Kasir (Admin)** | <a href="https://zzdree.github.io/ciremai-cashier/admin" target="_blank" rel="noopener noreferrer"><b>zzdree.github.io/ciremai-cashier/admin</b> ↗</a> | Dashboard POS Kasir, antrean live pesanan, cetak struk A4, dan laporan omzet harian *(PIN default: `9900`)*. |
 
 ---
 
 ## ✨ Fitur Utama
 
 - **🔢 Nomor Antrean Global (#N)** — Setiap pesanan pelanggan mendapatkan nomor urut antrean unik yang terus bertambah rapi (`#1, #2, #3, #4...`) tanpa reset harian.
-- **📱 Pemesanan Mandiri Meja (QR Meja)** — Pelanggan scan QR code di meja (meja 1–10), aplikasi otomatis mendeteksi nomor meja (`/order?meja=N`) dan menyertakannya dalam pesanan.
+- **📱 Pemesanan Mandiri Meja** — Pelanggan dapat memesan dari meja (`/order?meja=N`) dan nomor meja otomatis disertakan dalam pesanan.
 - **⚡ Antrean Real-time & Notifikasi Suara** — Pesanan baru yang dikirim pelanggan langsung masuk ke layar kasir dan memicu notifikasi suara *ding*.
 - **🛒 POS Kasir Cepat & Fleksibel** — Kasir dapat mengambil order, menyesuaikan menu jika pelanggan menambah pesanan, memberikan diskon nominal, dan menghitung uang kembalian secara otomatis melalui tombol cepat (*quick cash*).
-- **💳 Dukungan Metode Pembayaran** — Tunai (Cash), QRIS kertas fisik, serta opsi pencatatan Piutang/Kasbon.
-- **🖨️ Print Struk Thermal & Lembar QR Meja** — Dilengkapi stylesheet cetak responsif (`@media print`) untuk mencetak struk belanja 58–80mm dan lembar 10 kartu QR meja tanpa elemen web yang mengganggu.
+- **💳 Dukungan Metode Pembayaran** — Tunai (Cash), QRIS, serta opsi pencatatan Piutang/Kasbon.
+- **🖨️ Print Struk PDF / Kertas A4** — Dilengkapi stylesheet cetak responsif (`@media print`) untuk mencetak struk transaksi rapi pas 1 halaman penuh A4.
 - **📊 Laporan & Rekap Omzet Harian** — Menghitung total omzet hari ini, transaksi sukses, daftar menu terlaris, serta fitur ekspor laporan ke format Excel/CSV.
 - **🔄 Dual Storage (Cloud + Offline Fallback)** — Terintegrasi dengan database cloud **Supabase** dan otomatis menyimpan cadangan ke **LocalStorage** browser, sehingga kasir tetap dapat beroperasi normal jika jaringan internet terputus.
 - **🛡️ Keepalive Otomatis** — Otomatisasi GitHub Actions aktif setiap 6 jam untuk menjaga project Supabase free-tier agar tidak pernah terkena pause/inactivity.
