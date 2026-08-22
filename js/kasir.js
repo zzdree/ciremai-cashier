@@ -348,7 +348,8 @@ function bindPos() {
     updatePosUI();
   }));
 
-  $('#btnBayar').addEventListener('click', doBayar);
+  // Tombol Bayar hanya buka modal konfirmasi (binding kedua ada di bindConfirm).
+  // Jangan bind doBayar() langsung di sini, supaya tidak jalan 2x.
 }
 
 function resetPos() {
@@ -363,8 +364,9 @@ function resetPos() {
 function doBayar() {
   const total = calcTotal();
   const bayar = Number($('#posBayar').value) || 0;
+  const piutang = $('#cbPiutang').checked;
   if (!Object.keys(pos.cart).length) { toast('Keranjang kosong'); return; }
-  if (bayar < total) { toast('Uang kurang 😅'); return; }
+  if (!piutang && bayar < total) { toast('Uang kurang 😅'); return; }
 
   const diskon = Math.max(0, Number($('#posDiskon').value) || 0);
   const items = Object.entries(pos.cart).map(([id, qty]) => ({
