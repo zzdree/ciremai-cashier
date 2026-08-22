@@ -174,4 +174,40 @@ Pelanggan scan QR di meja → langsung buka katalog dengan nomor meja terdeteksi
 - **Print:** tombol "Cetak Semua QR" → `@media print` menyembunyikan semua kecuali `#view-qr`, grid jadi 3 kolom, tiap kartu `break-inside: avoid`.
 - **Konfigurasi:** `CONFIG.jumlahMeja` (default 10) + `CONFIG.mejaUrl(no)`.
 
+## 12. Alur Pencatatan Order (Pelanggan → Kasir)
+
+Sistem pencatatan tanpa kasir harus input manual. Pelanggan bisa memesan sendiri,
+lalu pesanan otomatis masuk antrian layar kasir.
+
+### 12.1 Dua pintu masuk
+1. **Pelanggan (`/`)** — pilih menu, isi nama + catatan + (jika di warung) meja, lalu
+   **Kirim Pesanan ke Kasir**. Order tersimpan ke Supabase (`status=baru`, `origin=app`)
+   sekaligus membuka chat WA sebagai cadangan.
+2. **Kasir input manual (`/kasir`)** — pelanggan yang tak mau pesan sendiri cukup
+   menyebutkan pesanan; kasir klik menu di panel transaksi seperti biasa.
+
+### 12.2 Antrian kasir
+- Tab **📥 Pesanan** menampilkan semua order `status=baru|diproses` (realtime dari DB).
+- Tiap kartu `.order-card`: nama, meja, waktu, items, catatan, total, badge status.
+- Tombol **➡️ Ambil & Proses** mengisi keranjang kasir dengan item order, menandai
+  `status=diproses`, lalu pindah ke tab Transaksi. Kasir masih bisa **menambah/mengurang
+  item** kalau kurang.
+
+### 12.3 Pembayaran & konfirmasi
+- Pilihan metode: **💵 Cash** atau **📱 QRIS** (kertas fisik di warung — tidak ada
+  pembayaran digital di app).
+- Checkbox **💳 Bayar Nanti (Piutang)** → dicatat dengan `status=piutang`, belum lunas.
+- Tombol **Bayar** memunculkan **modal konfirmasi** ("Pastikan Pesanan Benar") berisi
+  item, total, metode, dan status sebelum diproses — mencegah salah input.
+- Setelah konfirmasi: struk tampil, transaksi tersimpan ke DB (`lunas`/`piutang`),
+  antrian otomatis refresh.
+
+### 12.4 Cetak PDF
+- Tombol **🖨️ Cetak Struk (PDF)** memanggil `window.print()`; `@media print`
+  menyembunyikan semua kecuali `#receiptModal` → hasil cetak/PDF bersih hanya struk.
+
+### 12.5 Skema data (Supabase `transaksi`)
+`id, ts, items[], subtotal, diskon, total, bayar, kembalian, nama, meja, catatan,
+order_type, metode (cash|qris), status (baru|diproses|lunas|piutang|batal), origin (app|kasir)`
+
 _Dokumen living — update saat ada perubahan komponen atau palette._
