@@ -89,7 +89,7 @@ Karena aplikasi ini dibuat menggunakan **Vanilla Web Standards (HTML, CSS, JS)**
 
 - **Nama Usaha**: RM. Ciremai
 - **Menu Utama**: Magelangan, Nasi Goreng, Mie Dokdok, Minuman Hangat & Dingin
-- **Lokasi**: [RM. Ciremai UNNES di Google Maps](https://maps.app.goo.gl/Dzp9H1tu6BkAkfSV8) — X93V+8WX, Jl. Kalimasada, Sekaran, Kec. Gn. Pati, Kota Semarang, Jawa Tengah 50229
+- **Lokasi**: [RM. Ciremai UNNES di Google Maps](https://maps.app.goo.gl/Dzp9H1tu6BkAkfSV8) — Jl. Kalimasada, Sekaran, Kec. Gn. Pati, Kota Semarang, Jawa Tengah 50229
 - **Jam Operasional**: Buka 24 Jam Setiap Hari
 
 ---

@@ -31,18 +31,19 @@
   <!-- ============ TOPBAR ============ -->
   <header class="topbar" role="banner">
     <div class="topbar-inner container" style="max-width:1280px;">
-      <div class="topbar-left">
-        <div class="topbar-brand">
-          <div class="brand-badge" aria-hidden="true">C</div>
-          <span>Admin · <span id="tbNama">RM. Ciremai</span></span>
+      <div class="brand-mark">
+        <div class="brand-badge" aria-hidden="true">C</div>
+        <div>
+          <div class="brand-name" id="tbNama">RM. Ciremai</div>
+          <div class="brand-sub" id="tbSub">Admin & Kasir</div>
         </div>
+      </div>
+      <div class="topbar-right">
         <nav class="topbar-actions" role="tablist" aria-label="Navigasi Menu Admin">
           <button class="tab-btn active" data-view="kasir" role="tab" aria-selected="true" aria-controls="view-kasir-wrap">🛒 Kasir (POS)</button>
           <button class="tab-btn" data-view="pesanan" role="tab" aria-selected="false" aria-controls="view-pesanan">📥 Pesanan Masuk <span class="tab-badge" id="pesananBadge" hidden aria-live="polite">0</span></button>
           <button class="tab-btn" data-view="riwayat" role="tab" aria-selected="false" aria-controls="view-riwayat">📜 Laporan & Riwayat</button>
         </nav>
-      </div>
-      <div class="topbar-right">
         <button class="btn-topbar-logout" id="btnLogout" title="Keluar / Kunci Kasir" aria-label="Keluar dari mode admin">
           <span aria-hidden="true">🔒</span>
           <span>Logout</span>
@@ -55,13 +56,14 @@
   <main class="pos-layout with-cart" id="view-kasir-wrap" role="tabpanel" aria-label="Layar Kasir POS">
 
     <section class="view active" id="view-kasir">
-      <div class="search-wrap" style="margin-bottom:16px;">
+      <div class="search-wrap" style="margin-bottom:12px;">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
         <input type="search" id="posSearch" placeholder="Cari menu untuk ditambahkan ke struk…" autocomplete="off" aria-label="Cari menu di kasir" />
       </div>
+      <nav class="chips" id="posChips" role="tablist" aria-label="Kategori menu kasir" style="margin-bottom:16px;"></nav>
       <div class="grid" id="posGrid" aria-label="Daftar menu kasir"><!-- kartu menu POS --></div>
     </section>
 
@@ -84,19 +86,6 @@
         <!-- Perhitungan & Pembayaran POS -->
         <div class="pos-calc-card">
           <div class="pos-summary-rows">
-            <div class="pos-row">
-              <span class="row-label">Subtotal</span>
-              <span id="posSubtotal" class="row-val">Rp 0</span>
-            </div>
-
-            <div class="pos-row align-center">
-              <span class="row-label">Diskon</span>
-              <div class="currency-input-wrap">
-                <span class="curr-tag">Rp</span>
-                <input type="number" id="posDiskon" min="0" step="500" placeholder="0" class="curr-input" aria-label="Nominal diskon rupiah" />
-              </div>
-            </div>
-
             <div class="pos-row total-highlight">
               <span class="total-label">TOTAL AKHIR</span>
               <span id="posTotal" class="total-val">Rp 0</span>
@@ -178,7 +167,6 @@
   <section class="view" id="view-pesanan" role="tabpanel" aria-label="Antrean Pesanan Masuk Real-Time" style="max-width:1080px;margin:0 auto;padding:20px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
       <h2 style="font-size:1.2rem;">📥 Pesanan Masuk dari Pelanggan</h2>
-      <button class="chip" id="btnRefreshPesanan" style="margin:0;">🔄 Segarkan</button>
     </div>
     <div id="pesananList"></div>
   </section>

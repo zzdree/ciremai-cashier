@@ -3,7 +3,7 @@
    Transaksi tunai · struk · riwayat · laporan · kelola menu
    ============================================================ */
 
-const pos = { cart: {} },
+const pos = { cart: {}, kat: 'semua' },
   $ = (s) => document.querySelector(s),
   $$ = (s) => document.querySelectorAll(s),
   namaById = (id) => (MENU.find((m) => m.id === id) || {}).nama || id,
@@ -17,23 +17,23 @@ function initKasirUI() {
   if (__kasirInit) return;
   __kasirInit = true;
   $('#tbNama').textContent = CONFIG.namaWarung;
+  renderPosChips();
   renderPosGrid();
   bindTabs();
   bindPos();
   updatePosUI();
   bindReceiptModal();
-  bindPesanan();
   bindConfirm();
   bindLogout();
   $('#btnPrintReceipt').addEventListener('click', () => window.print());
   // Muat antrian pesanan saat buka
   renderPesanan();
-  // Auto-refresh antrian tiap 5 detik (tanpa tombol Segarkan)
+  // Auto-refresh antrian tiap 4 detik (otomatis real-time)
   window.__pesananTimer = setInterval(() => {
-    // Jangan ganggu kalau sedang ambil order / ada modal terbuka
+    // Jangan ganggu kalau sedang ada modal terbuka
     if (document.querySelector('#receiptModal.open') || document.querySelector('#confirmModal.open')) return;
     renderPesanan();
-  }, 5000);
+  }, 4000);
 
   // Tutup modal dengan Esc
   document.addEventListener('keydown', (e) => {
@@ -220,10 +220,6 @@ async function renderPesanan() {
   }
 }
 
-function bindPesanan() {
-  $('#btnRefreshPesanan')?.addEventListener('click', renderPesanan);
-}
-
 async function cancelOrder(id) {
   const o = daftarPesanan.find((x) => String(x.id) === String(id));
   const no = o ? (o.no ?? o.id) : id;
@@ -241,7 +237,6 @@ function takeOrder(id) {
   DB.updateOrder(id, { status: 'diproses' });
   Store.setCurrentOrder({ ...o, status: 'diproses' });
 
-  $('#posDiskon').value = o.diskon || '';
   $('#posBayar').value = '';
   $('#cbPiutang').checked = false;
 
@@ -259,12 +254,39 @@ function takeOrder(id) {
   toast('Pesanan diambil ✅');
 }
 
-// ---------- GRID MENU KASIR ----------
+// ---------- KATEGORI & GRID MENU KASIR ----------
+function renderPosChips() {
+  const nav = $('#posChips');
+  if (!nav) return;
+  const cats = [
+    { id: 'semua', label: 'Semua' },
+    ...MENU_KATEGORI,
+  ];
+  nav.innerHTML = cats.map((c) => `
+    <button type="button" class="chip ${pos.kat === c.id ? 'active' : ''}" data-cat="${c.id}" role="tab" aria-selected="${pos.kat === c.id}">
+      ${c.label}
+    </button>
+  `).join('');
+
+  nav.querySelectorAll('.chip').forEach((b) => {
+    b.addEventListener('click', () => {
+      pos.kat = b.dataset.cat;
+      renderPosChips();
+      renderPosGrid();
+    });
+  });
+}
+
 function renderPosGrid() {
   const habis = Store.getHabis();
   const q = ($('#posSearch').value || '').trim().toLowerCase();
   const grid = $('#posGrid');
-  const items = MENU.filter((m) => !q || m.nama.toLowerCase().includes(q));
+  const items = MENU.filter((m) => {
+    const matchCat = pos.kat === 'semua' || m.kategori === pos.kat;
+    const matchQ = !q || m.nama.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+
   grid.innerHTML = items.map((m) => {
     const sold = habis.includes(m.id);
     return `
@@ -331,8 +353,7 @@ function calcSubtotal() {
   return Object.entries(pos.cart).reduce((s, [id, qty]) => s + hargaById(id) * qty, 0);
 }
 function calcTotal() {
-  const diskon = Math.max(0, Number($('#posDiskon').value) || 0);
-  return Math.max(0, calcSubtotal() - diskon);
+  return calcSubtotal();
 }
 
 function updatePosUI() {
@@ -374,11 +395,10 @@ function bindPos() {
   $('#posSearch').addEventListener('input', renderPosGrid);
 
   $('#btnClearPos').addEventListener('click', () => {
-    if (!Object.keys(pos.cart).length && !$('#posDiskon').value && !$('#posBayar').value) return;
+    if (!Object.keys(pos.cart).length && !$('#posBayar').value) return;
     if (confirm('Bersihkan struk ini?')) resetPos();
   });
 
-  $('#posDiskon').addEventListener('input', updatePosUI);
   $('#posBayar').addEventListener('input', updatePosUI);
 
   $('#cbPiutang').addEventListener('change', updatePosUI);
@@ -395,14 +415,10 @@ function bindPos() {
     $('#posBayar').value = v === 'pas' ? calcTotal() : v;
     updatePosUI();
   }));
-
-  // Tombol Bayar hanya buka modal konfirmasi (binding kedua ada di bindConfirm).
-  // Jangan bind doBayar() langsung di sini, supaya tidak jalan 2x.
 }
 
 function resetPos() {
   pos.cart = {};
-  $('#posDiskon').value = '';
   $('#posBayar').value = '';
   $('#cbPiutang').checked = false;
   $('#changeLine').hidden = true;
@@ -424,7 +440,7 @@ async function doBayar() {
   if (!Object.keys(pos.cart).length) { toast('Keranjang kosong'); return; }
   if (!piutang && bayar < total) { toast('Uang kurang 😅'); return; }
 
-  const diskon = Math.max(0, Number($('#posDiskon').value) || 0);
+  const diskon = 0;
   const items = Object.entries(pos.cart).map(([id, qty]) => ({
     id, nama: namaById(id), harga: hargaById(id), qty,
   }));

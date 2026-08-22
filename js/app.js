@@ -26,14 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#footAlamat').textContent = CONFIG.alamat;
   $('#footJam').textContent = CONFIG.jamBuka;
 
-  // QR meja: jika dibuka via ?meja=N, tampilkan badge & simpan ke state
-  const mejaParam = new URLSearchParams(location.search).get('meja');
-  if (mejaParam && /^\d+$/.test(mejaParam)) {
-    state.meja = mejaParam;
-    const badge = $('#mejaBadge');
-    $('#mejaNo').textContent = mejaParam;
-    badge.hidden = false;
-  }
+
 
   renderChips();
   renderMenu();

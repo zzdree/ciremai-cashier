@@ -10,7 +10,7 @@ const CONFIG = {
   // Ganti dengan nomor WhatsApp resmi warung (format internasional tanpa +)
   waNomor: '6281234567890',
   jamBuka: 'Setiap hari · Buka 24 Jam',
-  alamat: 'X93V+8WX, Jl. Kalimasada, Sekaran, Kec. Gn. Pati, Kota Semarang, Jawa Tengah 50229',
+  alamat: 'Jl. Kalimasada, Sekaran, Kec. Gn. Pati, Kota Semarang, Jawa Tengah 50229',
   gmapsUrl: 'https://maps.app.goo.gl/Dzp9H1tu6BkAkfSV8',
   // Database cloud (opsional). Set enabled=true setelah isi url & key dari Supabase.
   // Gratis di https://supabase.com — lihat README untuk skema SQL-nya.
