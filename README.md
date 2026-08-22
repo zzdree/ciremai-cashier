@@ -44,7 +44,8 @@ Aplikasi kasir (POS) & pemesanan warung modern berbasis web. Pelanggan pesan lan
 │   ├── data.js         → Daftar katalog menu & harga default RM. Ciremai
 │   └── config.js       → Konfigurasi warung, PIN kasir, meja, dan credentials Supabase
 ├── DESIGN.md           → Dokumentasi panduan desain antarmuka
-└── PRD.md              → Product Requirements Document
+├── PRD.md              → Product Requirements Document
+└── schema.sql          → Skema database Supabase PostgreSQL lengkap
 ```
 
 ---
