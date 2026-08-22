@@ -165,4 +165,13 @@ atau neon.
 
 ---
 
+## 11. Fitur QR Code Meja
+
+Pelanggan scan QR di meja → langsung buka katalog dengan nomor meja terdeteksi otomatis.
+
+- **URL:** `index.html?meja=N` → badge "🪑 Meja N" muncul di hero, dan `Meja: N` otomatis masuk ke pesan WhatsApp.
+- **Generator (kasir):** tab **QR Meja** merender N kartu QR via `api.qrserver.com` (image, tanpa library JS).
+- **Print:** tombol "Cetak Semua QR" → `@media print` menyembunyikan semua kecuali `#view-qr`, grid jadi 3 kolom, tiap kartu `break-inside: avoid`.
+- **Konfigurasi:** `CONFIG.jumlahMeja` (default 10) + `CONFIG.mejaUrl(no)`.
+
 _Dokumen living — update saat ada perubahan komponen atau palette._

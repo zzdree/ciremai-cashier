@@ -36,6 +36,7 @@ supaya data kasir bisa diakses lintas perangkat.
 - **Menu "habis" otomatis.** Tandai menu habis di kasir → langsung nonaktif di halaman pelanggan.
 - **Simpan lokal.** Data tetap aman di browser (localStorage) walau offline.
 - **Sinkron cloud (opsional).** Aktifkan Supabase → transaksi masuk ke semua HP kasir (gratis).
+- **QR code meja.** Kasir cetak QR per meja → pelanggan scan, langsung buka menu & nomor meja otomatis masuk ke pesanan WhatsApp.
 
 ---
 
@@ -67,6 +68,7 @@ ciremai-cashier/
 ├─ setup-db.ps1   Script bantu buat tabel Supabase
 ├─ images/         Favicon
 ├─ PRD.md          Dokumen kebutuhan produk
+├─ DESIGN.md       Sistem desain UI/UX terpusat
 └─ LICENSE         Hak cipta privat
 ```
 
