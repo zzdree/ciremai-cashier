@@ -260,13 +260,9 @@ function takeOrder(id) {
 function renderPosChips() {
   const nav = $('#posChips');
   if (!nav) return;
-  const cats = [
-    { id: 'semua', label: 'Semua' },
-    ...MENU_KATEGORI,
-  ];
-  nav.innerHTML = cats.map((c) => `
+  nav.innerHTML = KATEGORI.map((c) => `
     <button type="button" class="chip ${pos.kat === c.id ? 'active' : ''}" data-cat="${c.id}" role="tab" aria-selected="${pos.kat === c.id}">
-      ${c.label}
+      ${c.emoji ? c.emoji + ' ' : ''}${c.label}
     </button>
   `).join('');
 
@@ -283,16 +279,26 @@ function renderPosGrid() {
   const habis = Store.getHabis();
   const q = ($('#posSearch').value || '').trim().toLowerCase();
   const grid = $('#posGrid');
+  if (!grid) return;
   const items = MENU.filter((m) => {
-    const matchCat = pos.kat === 'semua' || m.kategori === pos.kat;
+    const matchCat = pos.kat === 'semua' || m.kat === pos.kat;
     const matchQ = !q || m.nama.toLowerCase().includes(q);
     return matchCat && matchQ;
   });
 
+  if (!items.length) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column: 1 / -1; padding: 30px; text-align: center;">
+        <div class="big" style="font-size: 2rem;">🔍</div>
+        <p style="color: var(--ink-soft); margin-top: 6px;">Menu tidak ditemukan.</p>
+      </div>`;
+    return;
+  }
+
   grid.innerHTML = items.map((m) => {
     const sold = habis.includes(m.id);
     return `
-      <button class="card" data-id="${m.id}" ${sold ? 'disabled' : ''}>
+      <button type="button" class="card ${sold ? 'soldout' : ''}" data-id="${m.id}" ${sold ? 'disabled' : ''}>
         <div class="card-emoji">${m.emoji}</div>
         <div class="card-body">
           <div class="card-name">${m.nama}</div>
