@@ -120,10 +120,12 @@ function renderMenu() {
 }
 
 function cardEl(m) {
-  const card = document.createElement('button');
-  card.className = 'card';
-  card.disabled = m.habis;
+  const card = document.createElement('div');
+  card.className = 'card' + (m.habis ? ' soldout' : '');
   card.dataset.id = m.id;
+  card.setAttribute('role', 'button');
+  card.setAttribute('tabindex', m.habis ? '-1' : '0');
+  if (m.habis) card.setAttribute('aria-disabled', 'true');
 
   const qty = state.cart[m.id] || 0;
 
@@ -143,7 +145,13 @@ function cardEl(m) {
       const plusBtn = e.target.closest('[data-plus]');
       if (minusBtn) changeQty(m.id, -1);
       else if (plusBtn) changeQty(m.id, +1);
-      else addToCart(m.id);
+      else if (!state.cart[m.id]) addToCart(m.id);
+    });
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (!state.cart[m.id]) addToCart(m.id);
+      }
     });
   }
   return card;
@@ -294,6 +302,8 @@ function submitOrder(e) {
   window.open(url, '_blank');
 
   toast('Membuka WhatsApp… 🚀');
+  state.cart = {};
+  setTimeout(() => { closeCart(); refreshAll(); }, 600);
 }
 
 // ---------- TOAST ----------

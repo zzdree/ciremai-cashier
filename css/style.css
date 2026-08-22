@@ -191,14 +191,15 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
   box-shadow: var(--shadow);
   text-align: left;
   width: 100%;
+  cursor: pointer;
   transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
-.card:not(:disabled):hover {
+.card:not(.soldout):hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-lg);
   border-color: var(--gold);
 }
-.card:not(:disabled):active { transform: scale(.98); }
+.card:not(.soldout):active { transform: scale(.98); }
 
 .card-emoji {
   flex-shrink: 0;
@@ -212,8 +213,8 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
 .card-name { font-weight: 700; font-size: .92rem; line-height: 1.3; }
 .card-price { color: var(--red); font-weight: 800; font-size: .92rem; margin-top: 3px; }
 
-.card:disabled { cursor: not-allowed; opacity: .55; }
-.card:disabled .card-emoji { filter: grayscale(1); }
+.card.soldout { cursor: not-allowed; opacity: .55; }
+.card.soldout .card-emoji { filter: grayscale(1); }
 .soldout-tag {
   display: inline-block;
   margin-top: 4px;
@@ -458,7 +459,7 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
 .view.active { display: block; }
 
 /* Panel keranjang kasir */
-.cart-panel { position: sticky; top: 74px; }
+.cart-panel { position: static; }
 .cart-empty { text-align: center; padding: 30px 10px; color: var(--ink-soft); font-size: .88rem; }
 .cart-empty .big { font-size: 2rem; margin-bottom: 6px; }
 
@@ -560,6 +561,7 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
   background: var(--green);
   transition: background .2s ease;
   border: none;
+  font-size: 0; color: transparent; overflow: hidden;
 }
 .toggle::after {
   content: '';
@@ -639,7 +641,7 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
   .modal { border-radius: 24px; padding: 28px; }
   /* POS: menu kiri, keranjang kanan */
   .pos-layout.with-cart { grid-template-columns: 1fr 360px; }
-  .cart-panel { top: 82px; }
+  .cart-panel { position: sticky; top: 82px; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
 }
 

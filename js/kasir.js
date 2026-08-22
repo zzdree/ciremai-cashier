@@ -20,21 +20,29 @@ document.addEventListener('DOMContentLoaded', () => {
   updatePosUI();
   bindReceiptModal();
 
-  // Buka tab riwayat → render data
-  $$('.tab-btn[data-view]').forEach((b) => {
-    b.addEventListener('click', () => { if (b.dataset.view === 'riwayat') renderRiwayat(); });
+  // Tutup modal dengan Esc
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      $('#cartModal')?.classList.remove('open');
+      $('#receiptModal')?.classList.remove('open');
+      document.body.style.overflow = '';
+    }
   });
 });
 
 // ---------- TABS ----------
 function bindTabs() {
+  const main = $('#view-kasir-wrap');
+  const showView = (view) => {
+    $$('.tab-btn[data-view]').forEach((b) => b.classList.toggle('active', b.dataset.view === view));
+    main.style.display = (view === 'kasir') ? '' : 'none';
+    $$('.view').forEach((v) => v.classList.remove('active'));
+    $('#view-' + view).classList.add('active');
+    if (view === 'riwayat') renderRiwayat();
+    if (view === 'menu') renderMenuManage();
+  };
   $$('.tab-btn[data-view]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      $$('.tab-btn[data-view]').forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
-      $$('.view').forEach((v) => v.classList.remove('active'));
-      $('#view-' + btn.dataset.view).classList.add('active');
-    });
+    btn.addEventListener('click', () => showView(btn.dataset.view));
   });
 }
 
@@ -196,7 +204,7 @@ function doBayar() {
     ? `Kembalian: ${Store.rupiah(trx.kembalian)}`
     : 'Uang pas. Makasih! 🙏';
   $('#receiptPaper').innerHTML = receiptHTML(trx);
-  $('#receiptModal').classList.add('open');
+  openReceipt();
 
   resetPos();
   renderMenuManage();
@@ -226,10 +234,18 @@ function receiptHTML(t) {
     <div class="r-center r-small">${CONFIG.kota}</div>`;
 }
 
+function openReceipt() {
+  $('#receiptModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
 function bindReceiptModal() {
-  const close = () => $('#receiptModal').classList.remove('open');
+  const close = () => {
+    $('#receiptModal').classList.remove('open');
+    document.body.style.overflow = '';
+  };
   $('#btnCloseReceipt').addEventListener('click', close);
   $('#btnDoneReceipt').addEventListener('click', close);
+  $('#btnCsv').addEventListener('click', exportCSV);
   $('#receiptModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) close(); });
 }
 
@@ -269,7 +285,7 @@ function renderRiwayat() {
         if (t) {
           $('#kembalianMsg').textContent = t.kembalian > 0 ? `Kembalian: ${Store.rupiah(t.kembalian)}` : 'Uang pas.';
           $('#receiptPaper').innerHTML = receiptHTML(t);
-          $('#receiptModal').classList.add('open');
+          openReceipt();
         }
       });
     });
@@ -337,5 +353,3 @@ function toast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// Export untuk tombol CSV
-document.addEventListener('click', (e) => { if (e.target.id === 'btnCsv') exportCSV(); });
