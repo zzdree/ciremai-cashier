@@ -75,12 +75,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = '';
   };
   // Ubah pesanan yang SAMA (tambah/ubah item ke #N)
-  $('#btnEditOrder').addEventListener('click', () => {
+  $('#btnEditOrder').addEventListener('click', async () => {
     const no = ($('#successTitle').textContent.match(/#(\d+)/) || [])[1];
     state.editNo = Number(no);
     state.editId = String(no);
     state.cart = {};
     closeSuccess();
+    toast(`Edit pesanan #${no} — mengambil item lama...`);
+    // Preselect item lama biar user gak pilih ulang dari nol
+    try {
+      const old = await DB.ambilOrderById(String(no));
+      if (old && Array.isArray(old.items)) {
+        old.items.forEach((i) => { state.cart[i.id] = i.qty; });
+      }
+    } catch (_) {}
+    refreshAll();
     openCart();
     toast(`Edit pesanan #${no} — tambah/ubah lalu kirim`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -369,7 +378,7 @@ async function submitOrder(e) {
     bayar: 0,
     kembalian: 0,
     nama: '',
-    meja: '',
+    meja: state.meja || '',
     catatan,
     order_type: state.orderType,
     metode: '',
