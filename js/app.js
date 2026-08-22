@@ -28,9 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+  initTheme();
   renderChips();
   renderMenu();
   updateCartBar();
+
+  // Theme Toggle Event
+  $('#btnThemeToggle')?.addEventListener('click', toggleTheme);
 
   // Events
   $('#searchInput').addEventListener('input', (e) => {
@@ -439,3 +443,31 @@ function toast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
+
+// ---------- THEME TOGGLE ----------
+function initTheme() {
+  const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  updateThemeIcon(activeTheme);
+}
+
+function toggleTheme() {
+  const active = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = active === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('ciremai_theme', next); } catch(e) {}
+  updateThemeIcon(next);
+  toast(next === 'dark' ? 'Mode Gelap aktif 🌙' : 'Mode Terang aktif ☀️');
+}
+
+function updateThemeIcon(theme) {
+  const icon = document.querySelector('#btnThemeToggle .theme-icon');
+  if (icon) {
+    icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+  const btn = $('#btnThemeToggle');
+  if (btn) {
+    btn.setAttribute('title', theme === 'dark' ? 'Ganti ke Mode Terang' : 'Ganti ke Mode Gelap');
+    btn.setAttribute('aria-label', theme === 'dark' ? 'Ganti ke Mode Terang' : 'Ganti ke Mode Gelap');
+  }
+}
+

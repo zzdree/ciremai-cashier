@@ -6,6 +6,18 @@
   <title>RM. Ciremai Semarang — Menu & Pemesanan Online Real-Time</title>
   <meta name="description" content="Pesan Magelangan, Nasi Goreng, dan Mie Dokdok khas RM. Ciremai UNNES Sekaran Semarang. Buka 24 jam, pesan mandiri dari meja via QR, otomatis terhubung ke kasir." />
   <meta name="theme-color" content="#204B33" />
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('ciremai_theme');
+        if (saved) {
+          document.documentElement.setAttribute('data-theme', saved);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch(e) {}
+    })();
+  </script>
   <link rel="canonical" href="https://zzdree.github.io/ciremai-cashier/order" />
 
   <!-- Open Graph / Facebook / WhatsApp -->
@@ -102,7 +114,12 @@
             <div class="brand-sub" id="brandKota">Semarang, Jawa Tengah</div>
           </div>
         </div>
-        <a class="kasir-link" href="admin.html" aria-label="Buka Dashboard Admin dan Kasir">Admin</a>
+        <div class="nav-actions">
+          <button id="btnThemeToggle" class="theme-toggle-btn" aria-label="Ganti Mode Gelap atau Terang" title="Ganti Mode Gelap / Terang">
+            <span class="theme-icon">🌙</span>
+          </button>
+          <a class="kasir-link" href="admin.html" aria-label="Buka Dashboard Admin dan Kasir">Admin</a>
+        </div>
       </nav>
 
       <!-- Hero Content -->

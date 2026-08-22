@@ -63,6 +63,8 @@ function bindLogout() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  initAdminTheme();
+
   // ---------- LOCK SCREEN ----------
   const screen = $('#lockScreen');
   const input = $('#pinInput');
@@ -664,4 +666,34 @@ function toast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
+
+// ---------- THEME TOGGLE ----------
+function initAdminTheme() {
+  const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  updateAdminThemeIcon(activeTheme);
+
+  $('#btnAdminThemeToggle')?.addEventListener('click', toggleAdminTheme);
+}
+
+function toggleAdminTheme() {
+  const active = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = active === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('ciremai_theme', next); } catch(e) {}
+  updateAdminThemeIcon(next);
+  toast(next === 'dark' ? 'Mode Gelap aktif 🌙' : 'Mode Terang aktif ☀️');
+}
+
+function updateAdminThemeIcon(theme) {
+  const icon = document.querySelector('#btnAdminThemeToggle .theme-icon');
+  if (icon) {
+    icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+  const btn = $('#btnAdminThemeToggle');
+  if (btn) {
+    btn.setAttribute('title', theme === 'dark' ? 'Ganti ke Mode Terang' : 'Ganti ke Mode Gelap');
+    btn.setAttribute('aria-label', theme === 'dark' ? 'Ganti ke Mode Terang' : 'Ganti ke Mode Gelap');
+  }
+}
+
 
