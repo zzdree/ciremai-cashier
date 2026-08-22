@@ -62,13 +62,14 @@ Sistem digital ini dibuat untuk menyelesaikan 3 kebutuhan utama:
 - **Modal Sukses & Opsi Tambah/Ubah**: Pelanggan dapat menambah menu ke pesanan yang sama atau membuat pesanan baru.
 
 ### 4.2 Halaman Admin & Kasir (`admin.html` / `/admin`)
-- **Proteksi Akses**: Layar kunci PIN kasir (konfigurasi di `CONFIG.kasirPin`).
+- **Proteksi Akses**: Layar kunci PIN kasir aman (konfigurasi di `CONFIG.kasirPin`).
 - **5 Tab Navigasi Utama**:
-  1. `🛒 Kasir (POS)`: Pencarian menu, penyesuaian qty, diskon nominal, kalkulasi kembalian tunai, QRIS kertas, dan piutang/kasbon.
-  2. `📥 Pesanan Masuk`: Antrean pesanan real-time dari pelanggan, notifikasi suara, tombol ambil & proses, serta tombol pembatalan pesanan.
-  3. `📜 Laporan & Riwayat`: Ringkasan omzet hari ini, jumlah transaksi, menu terlaris, cetak ulang struk, dan ekspor CSV/Excel.
-  4. `📋 Kelola Menu`: Toggle ketersediaan stok (Tersedia / Habis).
-  5. `🔳 Cetak QR Meja`: Generator dan cetak kartu QR meja 1–10 secara rapi (print stylesheet).
+  1. `🛒 Kasir (POS)`: Konsol POS modern dengan input prefix `Rp`, segmented tab bayar (`💵 Tunai` / `📱 QRIS`), preset uang cepat (`10k`–`100k`), penyesuaian diskon, kalkulasi kembalian otomatis, dan opsi pencatatan piutang/kasbon.
+  2. `📥 Pesanan Masuk`: Antrean pesanan real-time dari pelanggan, notifikasi suara Web Audio API (*ding*), tombol ambil & proses, serta tombol pembatalan pesanan.
+  3. `📜 Laporan & Riwayat`: Ringkasan omzet harian, jumlah transaksi, menu terlaris, cetak ulang struk, dan ekspor CSV/Excel.
+  4. `📋 Kelola Menu`: Toggle ketersediaan stok (Tersedia / Habis) dengan sinkronisasi ke katalog pelanggan.
+  5. `🔳 Cetak QR Meja`: Generator dan cetak lembar kartu QR meja 1–10 secara rapi (print stylesheet 3 kolom).
+- **Automasi Infrastruktur**: GitHub Action Keepalive otomatis berjalan setiap 1 jam untuk mencegah jeda (*inactivity pause*) pada database Supabase.
 
 ---
 
