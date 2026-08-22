@@ -324,23 +324,6 @@ function submitOrder(e) {
   };
   Store.saveOrder(order);
 
-  const lines = [];
-  lines.push(`*PESANAN ${CONFIG.namaWarung.toUpperCase()}*`);
-  lines.push('');
-  entries.forEach(([id, qty], i) => {
-    lines.push(`${i + 1}. ${namaById(id)} x${qty} — ${Store.rupiah(hargaById(id) * qty)}`);
-  });
-  lines.push('');
-  lines.push(`Total: *${Store.rupiah(cartTotal())}*`);
-  lines.push('');
-  lines.push(`Nama: ${nama}`);
-  lines.push(`Sajian: ${state.orderType}`);
-  if (state.meja) lines.push(`Meja: ${state.meja}`);
-  if (catatan) lines.push(`Catatan: ${catatan}`);
-
-  const url = `https://wa.me/${CONFIG.waNomor}?text=${encodeURIComponent(lines.join('\n'))}`;
-  window.open(url, '_blank');
-
   toast('Pesanan masuk ke kasir ✅');
   state.cart = {};
   setTimeout(() => { closeCart(); refreshAll(); }, 600);
