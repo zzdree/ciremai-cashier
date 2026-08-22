@@ -1,57 +1,63 @@
-# 🍽️ RM. Ciremai — Cashier Web App
+# 🍽️ RM. Ciremai — Cashier & Order Web App
 
-Aplikasi kasir & pemesanan warung sederhana. Pelanggan pesan dari HP, langsung masuk ke antrian kasir secara otomatis (tanpa WhatsApp). Kasir melayani, menambah item jika kurang, mencatat pembayaran (cash / QRIS kertas), dan mencetak struk PDF.
-
-## 🔗 3 Link Utama
-
-| Tujuan | URL |
-|--------|-----|
-| **Pembeli (katalog & order)** | https://zzdree.github.io/ciremai-cashier/ |
-| **Pembeli (order)** | https://zzdree.github.io/ciremai-cashier/order |
-| **Kasir / Admin** | https://zzdree.github.io/ciremai-cashier/admin |
-
-> `/` dan `/order` sama-sama mengarah ke halaman pembeli. `/admin` mengarah ke halaman kasir.
-
-## ✨ Fitur
-
-- **Nomor order global** — setiap pesanan dapat nomor urut `#1, #2, #3…` yang terus naik selamanya (tidak reset per hari).
-- **Tanpa nama & meja** — pelanggan tinggal duduk; tidak perlu input nama/meja.
-- **Sinkron real-time ke kasir** — pesanan masuk langsung ke tab *Pesanan* di halaman kasir (via Supabase).
-- **Kasir bisa tambah item** — jika pesanan kurang, kasir tambahkan langsung dari keranjang.
-- **Pembayaran** — cash atau QRIS (kertas fisik di warung, bukan fitur digital). Bisa dibayar sekarang atau nanti (piutang).
-- **Struk PDF** — cetak struk langsung dari browser (Ctrl/Cmd+P).
-- **Pencatatan ke DB** — semua transaksi tersimpan di Supabase.
-
-## 🧱 Struktur
-
-```
-index.html        → Halaman pembeli (katalog + checkout)
-kasir.html        → Halaman kasir (POS + antrian pesanan)
-admin/index.html  → Redirect ke kasir.html
-kosong/index.html → Redirect ke index.html (pembeli)
-order/index.html  → Redirect ke index.html (pembeli)
-js/               → app.js (pembeli), kasir.js (POS), db.js, store.js, data.js, config.js
-css/style.css     → Semua styling
-```
-
-## ⚙️ Setup Lokal
-
-1. Clone repo.
-2. Edit `js/config.js` → isi `supabase.url` & `supabase.anonKey`.
-3. Jalankan migrasi SQL (sequence + RPC `next_order_no`) di Supabase SQL Editor:
-   - `supabase-order-no.sql`
-4. Buka `index.html` atau `kasir.html` di browser.
-
-## 🗄️ Database
-
-Tabel `transaksi` (Supabase Postgres) dengan kolom: `id`, `no` (nomor urut global), `ts`, `items`, `subtotal`, `total`, `bayar`, `kembalian`, `catatan`, `order_type`, `metode`, `status`, `origin`, `updated_at`.
-
-RPC `next_order_no()` → mengambil `nextval('order_no_seq')` (+1 selamanya).
-
-## ☁️ Deployment
-
-Hosting via **GitHub Pages** (branch `main`). Setiap push otomatis terdeploy. Supabase dijaga agar tidak terpause melalui GitHub Actions keepalive ping harian.
+Aplikasi kasir (POS) & pemesanan warung modern berbasis web. Pelanggan pesan langsung dari HP melalui QR meja / link tanpa repot, pesanan masuk otomatis ke antrean dashboard admin & kasir secara real-time. Kasir memproses transaksi, melayani penambahan menu, mencatat metode pembayaran (Cash / QRIS kertas), dan mencetak struk thermal / PDF.
 
 ---
 
-© RM. Ciremai — Aplikasi kasir warung sederhana.
+## 🔗 2 Rute Akses Utama
+
+| Rute | Pengguna | Fungsi |
+|---|---|---|
+| **`/order`** *(atau `/`)* | 📱 **Pelanggan** | Katalog menu interaktif, keranjang belanja, pilihan makan di tempat / bungkus, dan kirim pesanan langsung ke kasir. |
+| **`/admin`** | ⚙️ **Pengelola / Kasir** | Dashboard POS Kasir, antrean pesanan real-time dengan notifikasi suara, kelola menu habis, cetak QR meja, dan laporan omzet harian. |
+
+---
+
+## ✨ Fitur Utama
+
+- **Nomor Order Global (#N)** — Setiap pesanan mendapatkan nomor antrean yang terus bertambah rapi (`#1, #2, #3…`).
+- **QR Meja Pintar** — Pelanggan scan QR di meja, menu langsung terbuka dengan nomor meja terisi otomatis.
+- **Antrean Real-time & Notifikasi Suara** — Saat pesanan baru masuk dari pembeli, dashboard kasir berbunyi "ding" dan menampilkan kartu pesanan secara instan (via Supabase).
+- **Fleksibilitas Kasir** — Kasir dapat mengambil order, menambah/mengubah pesanan pelanggan jika ada tambahan di tempat, lalu memproses pembayaran.
+- **Dukungan Pembayaran & Kasbon** — Pembayaran tunai (cash) dengan hitung kembalian cepat, QRIS kertas, atau dicatat sebagai piutang (kasbon).
+- **Cetak Struk & Lembar QR Meja (Print Friendly)** — Cetak struk PDF/thermal printer dan cetak seluruh kartu QR meja sekaligus tanpa hambatan.
+- **Penyimpanan Ganda (Offline Fallback & Cloud)** — Data tersimpan di localStorage browser dan otomatis tersinkron ke Supabase cloud database.
+
+---
+
+## 🧱 Struktur Folder Repo
+
+```text
+├── admin.html          → Halaman dashboard Admin & Kasir (POS, antrean, menu, laporan, QR meja)
+├── index.html          → Halaman pemesanan Pelanggan (katalog & checkout)
+├── admin/
+│   └── index.html      → Route /admin (redirect bersih ke admin.html)
+├── order/
+│   └── index.html      → Route /order (redirect bersih ke index.html + menjaga query ?meja=N)
+├── css/
+│   └── style.css       → Design system & styling responsif + print stylesheet
+├── js/
+│   ├── app.js          → Logika aplikasi pemesanan pelanggan
+│   ├── kasir.js        → Logika dashboard POS kasir & manajemen
+│   ├── db.js           → Komunikasi Supabase REST API & RPC
+│   ├── store.js        → Local storage manager, counter & format rupiah
+│   ├── data.js         → Daftar katalog menu & harga default RM. Ciremai
+│   └── config.js       → Konfigurasi warung, PIN kasir, meja, dan credentials Supabase
+├── DESIGN.md           → Dokumentasi panduan desain antarmuka
+└── PRD.md              → Product Requirements Document
+```
+
+---
+
+## ⚙️ Setup & Menjalankan Lokal
+
+1. Clone repositori ini:
+   ```bash
+   git clone https://github.com/zzdree/ciremai-cashier.git
+   ```
+2. Sesuaikan konfigurasi di `js/config.js` jika diperlukan.
+3. Buka `index.html` (untuk pelanggan) atau `admin.html` (untuk kasir) langsung di browser atau gunakan server lokal seperti Live Server / `npx serve`.
+
+---
+
+© RM. Ciremai Semarang — Dibuat untuk kecepatan dan kemudahan operasional warung.

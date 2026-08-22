@@ -841,13 +841,64 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
 }
 .piutang-row input { width: 18px; height: 18px; accent-color: var(--red); }
 
-/* Print struk sebagai PDF */
+/* Print: Struk PDF & QR Code Meja */
 @media print {
-  body * { visibility: hidden; }
-  #receiptModal, #receiptModal * { visibility: visible; }
-  #receiptModal { position: absolute; inset: 0; background: #fff; }
-  .modal { box-shadow: none; max-width: 100% !important; }
-  #receiptModal .btn-primary, #receiptModal .btn-secondary { display: none !important; }
+  @page { margin: 8mm; }
+  body { background: #fff !important; color: #000 !important; }
+  .topbar, .tab-btn, .toast, .lock-screen, #btnPrintQr, #btnPrintReceipt, #btnDoneReceipt, #btnCloseReceipt, #btnCloseConfirm, #btnCancelConfirm, #btnProceedPay, #btnClearPos, .modal-close {
+    display: none !important;
+  }
+
+  /* Jika modal struk sedang terbuka -> cetak struk saja */
+  body:has(#receiptModal.open) .pos-layout,
+  body:has(#receiptModal.open) .view,
+  body:has(#receiptModal.open) #confirmModal {
+    display: none !important;
+  }
+  body:has(#receiptModal.open) #receiptModal {
+    position: static !important;
+    display: block !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+  body:has(#receiptModal.open) #receiptModal .modal {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  body:has(#receiptModal.open) #receiptModal .modal-head,
+  body:has(#receiptModal.open) #kembalianMsg {
+    display: none !important;
+  }
+
+  /* Jika tab QR meja aktif -> cetak lembar QR meja */
+  body:has(#view-qr.active) .pos-layout,
+  body:has(#view-qr.active) #receiptModal,
+  body:has(#view-qr.active) #confirmModal {
+    display: none !important;
+  }
+  body:has(#view-qr.active) #view-qr {
+    display: block !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  body:has(#view-qr.active) #view-qr .panel {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  .qr-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+  .qr-card {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    border: 1.5px solid #000 !important;
+    box-shadow: none !important;
+  }
 }
 
 /* ---- Lock screen kasir ---- */

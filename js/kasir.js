@@ -109,12 +109,17 @@ function bindTabs() {
 // ---------- SOUND: notif order baru ----------
 let __knownOrderIds = new Set();
 let __muted = localStorage.getItem('ciremai_mute') === '1';
+let __initialFetchDone = false;
+
 function playDing() {
   if (__muted) return;
   try {
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (!Ctx) return;
     const ctx = new Ctx();
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
     const now = ctx.currentTime;
     [880, 1320].forEach((f, i) => {
       const osc = ctx.createOscillator();
@@ -133,7 +138,7 @@ function playDing() {
   } catch (_) {}
 }
 
-function renderPesanan() {
+async function renderPesanan() {
   const list = $('#pesananList');
   if (!list) return;
   if (!DB.aktif()) {
@@ -141,12 +146,17 @@ function renderPesanan() {
     $('#pesananBadge').hidden = true;
     return;
   }
-  DB.ambilOrderBaru().then((rows) => {
-    // Notifikasi suara HANYA kalau ada order BARU yang belum pernah tampil
+  try {
+    const rows = await DB.ambilOrderBaru();
+    // Notifikasi suara jika ada order baru setelah pemuatan awal
     const ids = rows.map((r) => String(r.id));
     const fresh = ids.filter((id) => !__knownOrderIds.has(id));
-    if (fresh.length && __knownOrderIds.size > 0) playDing();
+    if (__initialFetchDone && fresh.length > 0) {
+      playDing();
+    }
     ids.forEach((id) => __knownOrderIds.add(id));
+    __initialFetchDone = true;
+
     daftarPesanan = rows;
     const badge = $('#pesananBadge');
     badge.textContent = rows.length;
@@ -171,7 +181,7 @@ function renderPesanan() {
           <div class="oc-head">
             <div>
               <div class="oc-name">🧾 Order ${label}${diubahTag}</div>
-              <div class="oc-meta">🕐 ${waktu} · ${o.order_type || 'makan di tempat'}${mejaTag}</div>
+              <div class="oc-meta">🕐 ${waktu} · ${o.order_type || 'Makan di Tempat'}${mejaTag}</div>
             </div>
             ${statusTag}
           </div>
@@ -179,7 +189,10 @@ function renderPesanan() {
           ${o.catatan ? `<div class="oc-note">📝 ${o.catatan}</div>` : ''}
           <div class="oc-foot">
             <div class="oc-total">${Store.rupiah(o.total || 0)}</div>
-            <button class="btn-primary oc-take" data-take="${o.id}">➡️ Ambil & Proses</button>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-secondary oc-cancel" data-cancel="${o.id}" style="padding:8px 12px;font-size:.82rem;">❌ Batal</button>
+              <button class="btn-primary oc-take" data-take="${o.id}">➡️ Ambil & Proses</button>
+            </div>
           </div>
         </div>`;
     }).join('');
@@ -187,11 +200,25 @@ function renderPesanan() {
     list.querySelectorAll('[data-take]').forEach((b) => {
       b.addEventListener('click', () => takeOrder(b.dataset.take));
     });
-  });
+    list.querySelectorAll('[data-cancel]').forEach((b) => {
+      b.addEventListener('click', () => cancelOrder(b.dataset.cancel));
+    });
+  } catch (e) {
+    console.warn('[Kasir] gagal ambil pesanan:', e);
+  }
 }
 
 function bindPesanan() {
   $('#btnRefreshPesanan')?.addEventListener('click', renderPesanan);
+}
+
+async function cancelOrder(id) {
+  const o = daftarPesanan.find((x) => String(x.id) === String(id));
+  const no = o ? (o.no ?? o.id) : id;
+  if (!confirm(`Batalkan pesanan #${no}?`)) return;
+  await DB.updateOrder(id, { status: 'batal' });
+  toast(`Pesanan #${no} dibatalkan ❌`);
+  renderPesanan();
 }
 
 function takeOrder(id) {
@@ -202,8 +229,13 @@ function takeOrder(id) {
   DB.updateOrder(id, { status: 'diproses' });
   Store.setCurrentOrder({ ...o, status: 'diproses' });
 
+  $('#posDiskon').value = o.diskon || '';
+  $('#posBayar').value = '';
+  $('#cbPiutang').checked = false;
+
+  const mejaInfo = o.meja ? ` · 🪑 Meja ${o.meja}` : '';
   $('#orderContext').hidden = false;
-  $('#orderContext').innerHTML = `📥 Order <b>#${o.no ?? o.id}</b> (${o.order_type || ''}) — keranjang sudah terisi. Tambah item jika kurang, lalu bayar.`;
+  $('#orderContext').innerHTML = `📥 Order <b>#${o.no ?? o.id}</b> (${o.order_type || 'Makan di Tempat'}${mejaInfo}) — keranjang terisi. Tambah item jika kurang, lalu bayar.`;
 
   $$('.tab-btn[data-view]').forEach((b) => b.classList.toggle('active', b.dataset.view === 'kasir'));
   $('#view-kasir-wrap').style.display = '';
@@ -374,12 +406,20 @@ function resetPos() {
   pos.cart = {};
   $('#posDiskon').value = '';
   $('#posBayar').value = '';
+  $('#cbPiutang').checked = false;
+  $('#changeLine').hidden = true;
+  Store.clearCurrentOrder();
+  const ctx = $('#orderContext');
+  if (ctx) {
+    ctx.hidden = true;
+    ctx.innerHTML = '';
+  }
   renderPosCart();
   updatePosUI();
 }
 
 // ---------- BAYAR & STRUK ----------
-function doBayar() {
+async function doBayar() {
   const total = calcTotal();
   const bayar = Number($('#posBayar').value) || 0;
   const piutang = $('#cbPiutang').checked;
@@ -406,20 +446,32 @@ function doBayar() {
     origin: 'kasir',
   };
 
-  // Jika ini berasal dari pesanan pelanggan, sambungkan ID asli
+  // Jika ini berasal dari pesanan pelanggan, sambungkan nomor dan info asli
   const cur = Store.getCurrentOrder();
   if (cur && cur.id) {
     trx.id = cur.id;
+    if (cur.no) trx.no = cur.no;
     trx.origin = cur.origin || 'kasir';
-    trx.nama = cur.nama;
-    trx.meja = cur.meja;
-    trx.catatan = cur.catatan;
-    trx.order_type = cur.order_type;
+    trx.nama = cur.nama || '';
+    trx.meja = cur.meja || '';
+    trx.catatan = cur.catatan || '';
+    trx.order_type = cur.order_type || 'Makan di Tempat';
   }
 
-  // Simpan ke cloud (status lunas/piutang)
+  // Simpan ke local storage & cloud
   Store.addTrx(trx);
-  if (cur && cur.id) DB.updateOrder(cur.id, { status: trx.status, metode, total: trx.total });
+  if (cur && cur.id) {
+    await DB.updateOrder(cur.id, {
+      items: trx.items,
+      subtotal: trx.subtotal,
+      diskon: trx.diskon,
+      total: trx.total,
+      bayar: trx.bayar,
+      kembalian: trx.kembalian,
+      status: trx.status,
+      metode: trx.metode,
+    });
+  }
   Store.clearCurrentOrder();
 
   $('#kembalianMsg').textContent = piutang
@@ -473,26 +525,29 @@ function bindConfirm() {
   $('#btnProceedPay').addEventListener('click', () => { close(); processPay(); });
 }
 
-
-
 function receiptHTML(t) {
   const waktu = new Date(t.ts).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   const rows = t.items.map((i) => `
     <div class="r-row"><span>${i.qty}× ${i.nama}</span><span>${Store.rupiah(i.harga * i.qty)}</span></div>`).join('');
   const diskonLine = t.diskon > 0
     ? `<div class="r-row"><span>Diskon</span><span>-${Store.rupiah(t.diskon)}</span></div>` : '';
+  const displayId = t.no ? `ORDER #${t.no}` : t.id;
+  const mejaLine = t.meja ? `<div class="r-center r-small">Meja: ${t.meja} (${t.order_type || 'Makan di Tempat'})</div>` : '';
+  const metodeLabel = t.metode === 'qris' ? 'QRIS' : 'CASH';
+
   return `
     <div class="r-center r-bold">${CONFIG.namaWarung.toUpperCase()}</div>
     <div class="r-center r-small">${CONFIG.alamat}</div>
     <div class="r-center r-small">${waktu}</div>
+    ${mejaLine}
     <div class="r-line"></div>
-    <div class="r-bold">${t.id}</div>
+    <div class="r-bold r-center">${displayId}</div>
     <div class="r-line"></div>
     ${rows}
     <div class="r-line"></div>
     ${diskonLine}
     <div class="r-row r-bold"><span>TOTAL</span><span>${Store.rupiah(t.total)}</span></div>
-    <div class="r-row"><span>BAYAR</span><span>${Store.rupiah(t.bayar)}</span></div>
+    <div class="r-row"><span>BAYAR (${metodeLabel})</span><span>${Store.rupiah(t.bayar)}</span></div>
     <div class="r-row"><span>KEMBALI</span><span>${Store.rupiah(t.kembalian)}</span></div>
     <div class="r-line"></div>
     <div class="r-center r-small">~ Terima kasih ~</div>
@@ -535,10 +590,11 @@ function renderRiwayat() {
     list.innerHTML = trx.map((t) => {
       const waktu = new Date(t.ts).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
       const ringkas = t.items.map((i) => `${i.qty}× ${i.nama}`).join(', ');
+      const label = t.no ? `Order #${t.no}` : t.id;
       return `
         <button class="trx-row" data-id="${t.id}">
           <div>
-            <div class="trx-id">${t.id}</div>
+            <div class="trx-id">${label}</div>
             <div class="trx-meta">${waktu} · ${ringkas}</div>
           </div>
           <div class="trx-amount">${Store.rupiah(t.total)}</div>
@@ -546,7 +602,7 @@ function renderRiwayat() {
     }).join('');
     list.querySelectorAll('.trx-row').forEach((row) => {
       row.addEventListener('click', () => {
-        const t = Store.getTrx().find((x) => x.id === row.dataset.id);
+        const t = Store.getTrx().find((x) => String(x.id) === String(row.dataset.id));
         if (t) {
           $('#kembalianMsg').textContent = t.kembalian > 0 ? `Kembalian: ${Store.rupiah(t.kembalian)}` : 'Uang pas.';
           $('#receiptPaper').innerHTML = receiptHTML(t);

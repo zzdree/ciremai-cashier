@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Produk** | Ciremai Cashier — web app pencatatan penjualan (POS) + pemesanan pelanggan |
-| **Lokasi bisnis** | [RM. Ciremai UNNES](https://www.google.com/maps/search/?api=1&query=RM%20Ciremai%20UNNES%20Semarang) — Kampus UNNES, Sekaran, Gunungpati, Kota Semarang |
+| **Lokasi bisnis** | [RM. Ciremai UNNES](https://maps.app.goo.gl/Dzp9H1tu6BkAkfSV8) — X93V+8WX, Jl. Kalimasada, Sekaran, Kec. Gn. Pati, Kota Semarang, Jawa Tengah 50229 |, Jawa Tengah 50229 |
 | **Folder proyek** | `C:\ANDREAS\ciremai-cashier` |
 | **Deployment target** | GitHub Pages (static hosting, gratis) |
 | **Versi dokumen** | 1.0 — 22 Agustus 2026 |
@@ -48,32 +48,31 @@ RM. Ciremai adalah warung makan bergaya *burjo* (magelangan, nasi goreng, mie do
 - **Checkout**: form nama pemesan, tipe pesanan (Makan di Tempat / Bungkus), catatan → tombol **"Pesan via WhatsApp"** membuka `wa.me` dengan rincian pesanan terformat.
 - Info warung: alamat + link Google Maps, jam buka.
 
-### 4.2 Halaman Kasir (`kasir.html`) — POS
-- Grid menu + pencarian + filter kategori (sama seperti pelanggan).
+### 4.2 Halaman Admin & Kasir (`admin.html` / `/admin`) — POS & Manajemen
+- Grid menu + pencarian + filter kategori.
+- Antrean pesanan real-time dari pelanggan dengan notifikasi suara.
 - Panel keranjang: qty ±, hapus, **diskon nominal**, total.
-- **Pembayaran tunai**: input uang diterima + tombol cepat (uang pas / 20rb / 50rb / 100rb) → kembalian otomatis; validasi uang kurang.
-- **Simpan transaksi** ke `localStorage` dengan ID unik harian (`TRX-YYYYMMDD-NNN`).
-- **Struk**: pratinjau + cetak (layout termal 58–80mm via `window.print()`).
-- **Riwayat**: daftar transaksi hari ini, klik untuk cetak ulang struk.
-- **Laporan harian**: total omzet, jumlah transaksi, item terlaris, ekspor **CSV**.
-- **Kelola menu**: toggle *Habis/Tersedia* per item — tersimpan & tercermin di halaman pelanggan.
+- **Pembayaran**: Tunai (input nominal + tombol cepat + kembalian otomatis) & QRIS kertas, atau opsi Piutang (kasbon).
+- **Simpan transaksi**: Sinkronisasi Supabase + fallback `localStorage`.
+- **Struk & QR Meja**: Layout cetak responsif via `window.print()` untuk struk thermal/PDF dan cetak kartu QR meja.
+- **Riwayat & Laporan harian**: Total omzet, jumlah transaksi, item terlaris, ekspor **CSV / Excel**.
+- **Kelola menu**: Toggle *Habis/Tersedia* per item — tersimpan & langsung tercermin di halaman pelanggan.
 
 ### 4.3 Di Luar Scope v1 (Non-goals)
-- Pembayaran QRIS/e-wallet terintegrasi (hanya catatan "tunai").
-- Sinkronisasi real-time pesanan WA → kasir (butuh backend; v2 via Supabase).
-- Multi outlet, manajemen stok bahan baku, akun/login multi-user.
-- Antar (delivery) dengan kurir.
+- Payment gateway online otomatis (cukup QRIS statis / tunai di kasir).
+- Multi outlet, manajemen stok bahan baku, akun login multi-user kompleks.
 
 ## 5. Arsitektur Teknis
 
 ```
 ┌─────────────────────────────────────────────┐
 │              Static Web App                  │
-│  index.html ──► js/app.js   (Pelanggan)      │
-│  kasir.html ──► js/kasir.js (POS Kasir)      │
+│  index.html (/order) ──► js/app.js   (Pelanggan)
+│  admin.html (/admin) ──► js/kasir.js (Admin/Kasir)
 │        └── shared: css/style.css             │
-│                   js/config.js  (profil)     │
+│                   js/config.js  (profil/db)  │
 │                   js/data.js    (menu)       │
+│                   js/db.js      (supabase)   │
 │                   js/store.js   (localStorage)│
 └─────────────────────────────────────────────┘
 Deploy: GitHub Pages (branch main, folder root)

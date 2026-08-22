@@ -19,13 +19,16 @@ const DB = (() => {
     };
   }
 
-  // Simpan satu transaksi ke cloud (fire-and-forget, gagal tidak mengganggu kasir)
+  // Simpan / upsert satu transaksi ke cloud (fire-and-forget, gagal tidak mengganggu kasir)
   async function simpan(trx) {
     if (!aktif()) return false;
     try {
       const res = await fetch(`${cfg().url}/rest/v1/${TABEL}`, {
         method: 'POST',
-        headers: headers(),
+        headers: {
+          ...headers(),
+          'Prefer': 'resolution=merge-duplicates,return=minimal',
+        },
         body: JSON.stringify([trx]),
       });
       return res.ok;

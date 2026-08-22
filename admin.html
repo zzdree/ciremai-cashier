@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin & Kasir — RM. Ciremai Semarang</title>
+  <meta name="description" content="Dashboard Admin & Kasir (POS) RM. Ciremai UNNES Semarang: transaksi kasir, antrean pesanan real-time, cetak QR meja, dan laporan harian." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23C43C12'/><text x='50' y='68' font-size='52' text-anchor='middle'>🧾</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="pos-body">
+
+  <!-- ============ LOCK SCREEN ============ -->
+  <div id="lockScreen" class="lock-screen">
+    <div class="lock-card">
+      <div class="lock-emoji">🔒</div>
+      <h2>Akses Admin & Kasir</h2>
+      <p>Masukkan PIN untuk membuka dashboard admin & kasir.</p>
+      <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off" />
+      <button class="btn-primary" id="btnUnlock">Buka Dashboard</button>
+      <p class="lock-err" id="lockErr" hidden>❌ PIN salah. Coba lagi.</p>
+    </div>
+  </div>
+
+  <!-- ============ TOPBAR ============ -->
+  <header class="topbar">
+    <div class="topbar-inner container" style="max-width:1280px;">
+      <div class="topbar-brand">
+        <div class="brand-badge">C</div>
+        <span>Admin · <span id="tbNama">RM. Ciremai</span></span>
+      </div>
+      <nav class="topbar-actions">
+        <button class="tab-btn active" data-view="kasir">🛒 Kasir (POS)</button>
+        <button class="tab-btn" data-view="pesanan">📥 Pesanan Masuk <span class="tab-badge" id="pesananBadge" hidden>0</span></button>
+        <button class="tab-btn" data-view="riwayat">📜 Laporan & Riwayat</button>
+        <button class="tab-btn" data-view="menu">📋 Kelola Menu</button>
+        <button class="tab-btn" data-view="qr">🔳 Cetak QR Meja</button>
+        <a class="tab-btn" href="order/" style="text-decoration:none;">📱 Mode Pelanggan</a>
+        <button class="tab-btn" id="btnMute" title="Suara notif order baru" aria-label="Toggle suara notif">🔊</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ VIEW: TRANSAKSI (POS) ============ -->
+  <main class="pos-layout with-cart" id="view-kasir-wrap">
+
+    <section class="view active" id="view-kasir">
+      <div class="panel panel-pad" style="margin-bottom:16px;">
+        <input type="search" id="posSearch" placeholder="🔍 Cari menu untuk ditambahkan…" autocomplete="off"
+               style="width:100%;padding:12px 16px;border-radius:999px;border:1.5px solid var(--line);outline:none;" />
+      </div>
+      <div class="grid" id="posGrid"><!-- kartu menu POS --></div>
+    </section>
+
+    <aside class="cart-panel">
+      <div class="panel panel-pad">
+        <div class="pos-cart-head">
+          <h2>🛒 Struk Kasir</h2>
+          <button class="btn-clear" id="btnClearPos" title="Bersihkan struk">Bersihkan</button>
+        </div>
+
+        <div id="orderContext" class="order-context" hidden></div>
+
+        <div class="pos-cart-list" id="posCartList"></div>
+
+        <div class="pos-calc">
+          <div class="pos-row">
+            <span>Subtotal</span>
+            <span id="posSubtotal" class="num">Rp 0</span>
+          </div>
+
+          <div class="pos-row">
+            <span>Diskon (Rp)</span>
+            <input type="number" id="posDiskon" min="0" step="500" placeholder="0" class="input-inline" />
+          </div>
+
+          <div class="pos-row total-row">
+            <span>TOTAL</span>
+            <span id="posTotal" class="num-big red">Rp 0</span>
+          </div>
+
+          <!-- Pembayaran -->
+          <div class="pay-section">
+            <label class="pay-label">Metode Pembayaran</label>
+            <div class="metode-group">
+              <label class="metode-opt">
+                <input type="radio" name="metode" value="cash" checked />
+                <span>💵 Tunai (Cash)</span>
+              </label>
+              <label class="metode-opt">
+                <input type="radio" name="metode" value="qris" />
+                <span>📱 QRIS Kertas</span>
+              </label>
+            </div>
+
+            <label class="pay-label" style="margin-top:10px;">Uang Diterima</label>
+            <input type="number" id="posBayar" min="0" step="1000" placeholder="Nominal uang diterima…" class="input-block" />
+
+            <div class="quick-money" id="quickMoney">
+              <button type="button" class="money-btn" data-money="pas">Pas</button>
+              <button type="button" class="money-btn" data-money="10000">10rb</button>
+              <button type="button" class="money-btn" data-money="20000">20rb</button>
+              <button type="button" class="money-btn" data-money="50000">50rb</button>
+              <button type="button" class="money-btn" data-money="100000">100rb</button>
+            </div>
+
+            <div class="pos-row change-row" id="changeLine" hidden>
+              <span>Kembalian</span>
+              <span id="posKembalian" class="num-big green">Rp 0</span>
+            </div>
+
+            <!-- Piutang / Kasbon -->
+            <label class="piutang-row" style="margin-top:10px;">
+              <input type="checkbox" id="cbPiutang" />
+              <span>Dicatat sebagai <b>Piutang / Kasbon</b> (belum bayar)</span>
+            </label>
+          </div>
+
+          <button class="btn-primary btn-checkout" id="btnBayar" disabled>
+            💰 Simpan & Cetak Struk
+          </button>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- ============ VIEW: RIWAYAT ============ -->
+  <section class="view" id="view-riwayat" style="max-width:1080px;margin:0 auto;padding:20px;">
+    <div class="stat-grid" id="statGrid"></div>
+
+    <div class="panel panel-pad" style="margin-top:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+        <h2 style="font-size:1.15rem;">Daftar Transaksi Hari Ini</h2>
+        <button class="btn-secondary" id="btnCsv" style="width:auto;padding:8px 16px;font-size:.85rem;">📥 Download Excel / CSV</button>
+      </div>
+      <div class="trx-list" id="trxList"></div>
+    </div>
+
+    <div class="panel panel-pad" style="margin-top:20px;">
+      <h2 style="font-size:1.15rem;margin-bottom:12px;">🔥 Menu Paling Laris Hari Ini</h2>
+      <ul class="best-list" id="bestList"></ul>
+    </div>
+  </section>
+
+  <!-- ============ VIEW: MENU (KELOLA STOK) ============ -->
+  <section class="view" id="view-menu" style="max-width:880px;margin:0 auto;padding:20px;">
+    <div class="panel panel-pad">
+      <h2 style="font-size:1.15rem;">📋 Status Stok Menu</h2>
+      <p style="font-size:.85rem;color:var(--ink-soft);margin-top:4px;">
+        Klik untuk menandai menu <b>Habis</b>. Menu yang habis otomatis tidak bisa dipesan pelanggan di katalog.
+      </p>
+      <div class="menu-manage-list" id="menuManageList" style="margin-top:16px;"></div>
+    </div>
+  </section>
+
+  <!-- ============ VIEW: QR MEJA ============ -->
+  <section class="view" id="view-qr" style="max-width:960px;margin:0 auto;padding:20px;">
+    <div class="panel">
+      <div class="panel-pad" style="border-bottom:1.5px solid var(--line);">
+        <h2 style="font-size:1.15rem;">🔳 Cetak QR Code Meja</h2>
+        <p style="font-size:.84rem;color:var(--ink-soft);margin-top:4px;">
+          Tempel di tiap meja. Pelanggan scan → langsung buka menu & nomor meja otomatis terisi saat pesan.
+        </p>
+        <button class="btn-secondary" id="btnPrintQr" style="margin-top:12px;width:auto;padding:10px 18px;">🖨️ Cetak Semua QR</button>
+      </div>
+      <div class="qr-grid" id="qrGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ VIEW: PESANAN (ANTRIAN) ============ -->
+  <section class="view" id="view-pesanan" style="max-width:1080px;margin:0 auto;padding:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+      <h2 style="font-size:1.2rem;">📥 Pesanan Masuk dari Pelanggan</h2>
+      <button class="chip" id="btnRefreshPesanan" style="margin:0;">🔄 Segarkan</button>
+    </div>
+    <div id="pesananList"></div>
+  </section>
+
+  <!-- ============ MODAL KONFIRMASI BAYAR ============ -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal" style="max-width:420px;">
+      <div class="modal-head">
+        <h2>✋ Pastikan Pesanan Benar</h2>
+        <button class="modal-close" id="btnCloseConfirm" aria-label="Tutup">✕</button>
+      </div>
+      <div id="confirmBody" style="text-align:left;margin:10px 0 18px;"></div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-secondary" id="btnCancelConfirm" style="flex:1;">Batal</button>
+        <button class="btn-primary" id="btnProceedPay" style="flex:2;">✔️ Ya, Lanjut Bayar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL STRUK ============ -->
+  <div class="modal-overlay" id="receiptModal">
+    <div class="modal" style="max-width:420px;text-align:center;">
+      <div class="modal-head">
+        <h2>✅ Transaksi Berhasil</h2>
+        <button class="modal-close" id="btnCloseReceipt" aria-label="Tutup">✕</button>
+      </div>
+      <p style="color:var(--green);font-weight:800;margin-bottom:14px;" id="kembalianMsg"></p>
+      <div class="receipt-wrap"><div class="receipt" id="receiptPaper"></div></div>
+      <button class="btn-primary" id="btnPrintReceipt">🖨️ Cetak Struk (PDF)</button>
+      <button class="btn-secondary modal-close2" id="btnDoneReceipt">Selesai — Transaksi Baru</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/kasir.js"></script>
+</body>
+</html>

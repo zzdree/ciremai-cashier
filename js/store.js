@@ -27,8 +27,13 @@ const Store = {
     catch { return []; }
   },
   addTrx(trx) {
-    const all = this.getTrx();
-    all.unshift(trx);
+    let all = this.getTrx();
+    const existingIndex = all.findIndex((t) => String(t.id) === String(trx.id));
+    if (existingIndex >= 0) {
+      all[existingIndex] = trx;
+    } else {
+      all.unshift(trx);
+    }
     localStorage.setItem(this.KEYS.trx, JSON.stringify(all));
     // Sinkron ke cloud (jika diaktifkan) — tidak memblokir kasir
     if (typeof DB !== 'undefined' && DB.aktif()) {
@@ -44,8 +49,13 @@ const Store = {
   nextId() {
     const d = new Date();
     const ymd = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-    let c = JSON.parse(localStorage.getItem(this.KEYS.counter)) || {};
-    if (c.ymd !== ymd) c = { ymd, n: 0 };
+    let c = { ymd, n: 0 };
+    try {
+      const stored = JSON.parse(localStorage.getItem(this.KEYS.counter));
+      if (stored && stored.ymd === ymd && typeof stored.n === 'number') {
+        c = stored;
+      }
+    } catch {}
     c.n += 1;
     localStorage.setItem(this.KEYS.counter, JSON.stringify(c));
     return `TRX-${ymd}-${String(c.n).padStart(3, '0')}`;

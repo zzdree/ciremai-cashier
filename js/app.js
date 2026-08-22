@@ -81,17 +81,28 @@ document.addEventListener('DOMContentLoaded', () => {
     state.editId = String(no);
     state.cart = {};
     closeSuccess();
-    toast(`Edit pesanan #${no} — mengambil item lama...`);
-    // Preselect item lama biar user gak pilih ulang dari nol
+    toast(`Edit pesanan #${no} — mengambil data...`);
+    // Preselect item lama dan catatan biar user gak pilih ulang dari nol
     try {
       const old = await DB.ambilOrderById(String(no));
-      if (old && Array.isArray(old.items)) {
-        old.items.forEach((i) => { state.cart[i.id] = i.qty; });
+      if (old) {
+        if (Array.isArray(old.items)) {
+          old.items.forEach((i) => { state.cart[i.id] = i.qty; });
+        }
+        if (old.catatan) {
+          $('#custNote').value = old.catatan;
+        }
+        if (old.order_type) {
+          state.orderType = old.order_type;
+          document.querySelectorAll('.type-btn').forEach((b) => {
+            b.classList.toggle('active', b.dataset.type === old.order_type);
+          });
+        }
       }
     } catch (_) {}
     refreshAll();
     openCart();
-    toast(`Edit pesanan #${no} — tambah/ubah lalu kirim`);
+    toast(`Edit pesanan #${no} — ubah lalu kirim ulang`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
   $('#btnAddMore').addEventListener('click', () => {
@@ -99,10 +110,15 @@ document.addEventListener('DOMContentLoaded', () => {
     state.editNo = null;
     state.editId = null;
     state.cart = {};
+    $('#custNote').value = '';
     closeSuccess();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
   $('#btnDone').addEventListener('click', () => {
+    state.editNo = null;
+    state.editId = null;
+    state.cart = {};
+    $('#custNote').value = '';
     closeSuccess();
     toast('Terima kasih! Sampai jumpa 👋');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -325,7 +341,7 @@ function renderCartItems() {
   $('#sumTotal').textContent = Store.rupiah(cartTotal());
 }
 
-// ---------- CHECKOUT → WHATSAPP ----------
+// ---------- CHECKOUT → KASIR ----------
 async function submitOrder(e) {
   e.preventDefault();
 
@@ -335,69 +351,84 @@ async function submitOrder(e) {
     return;
   }
 
-  const catatan = $('#custNote').value.trim();
-  const items = entries.map(([id, qty]) => ({
-    id, nama: namaById(id), harga: hargaById(id), qty,
-  }));
-  const total = cartTotal();
+  const submitBtn = $('#btnWa');
+  if (submitBtn) submitBtn.disabled = true;
 
-  // Mode EDIT: update order yang sama (ubah/tambah item ke #N)
-  if (state.editId) {
-    await DB.updateOrder(state.editId, {
-      items, total, subtotal: total, catatan,
-      updated_at: new Date().toISOString(),
-      diubah: true,
-    });
-    const no = state.editNo;
+  try {
+    const catatan = $('#custNote').value.trim();
+    const items = entries.map(([id, qty]) => ({
+      id, nama: namaById(id), harga: hargaById(id), qty,
+    }));
+    const total = cartTotal();
+
+    // Mode EDIT: update order yang sama (ubah/tambah item ke #N)
+    if (state.editId) {
+      await DB.updateOrder(state.editId, {
+        items,
+        total,
+        subtotal: total,
+        catatan,
+        order_type: state.orderType,
+        updated_at: new Date().toISOString(),
+        diubah: true,
+      });
+      const no = state.editNo;
+      state.cart = {};
+      state.editNo = null;
+      state.editId = null;
+      setTimeout(() => {
+        closeCart();
+        refreshAll();
+        $('#successTitle').textContent = `Pesanan #${no} Diperbarui!`;
+        $('#successBody').textContent = 'Perubahan sudah masuk ke layar kasir. Mau ubah lagi?';
+        $('#successModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }, 400);
+      toast(`Pesanan #${no} diperbarui ✏️`);
+      return;
+    }
+
+    // Mode BARU: ambil nomor global berikutnya
+    let no = await DB.nextOrderNo();
+    if (!no) {
+      // Fallback lokal jika RPC Supabase offline/gagal
+      no = Math.floor(Date.now() / 1000) % 100000;
+    }
+
+    const order = {
+      id: String(no),
+      no,
+      ts: new Date().toISOString(),
+      items,
+      subtotal: total,
+      diskon: 0,
+      total,
+      bayar: 0,
+      kembalian: 0,
+      nama: '',
+      meja: state.meja || '',
+      catatan,
+      order_type: state.orderType,
+      metode: '',
+      status: 'baru',
+      origin: 'app',
+    };
+    Store.saveOrder(order);
+
+    toast(`Pesanan #${no} masuk ke kasir ✅`);
     state.cart = {};
-    state.editNo = null;
-    state.editId = null;
     setTimeout(() => {
       closeCart();
       refreshAll();
-      $('#successTitle').textContent = `Pesanan #${no} Diperbarui!`;
-      $('#successBody').textContent = 'Perubahan sudah masuk ke layar kasir. Mau ubah lagi?';
+      // Tampilkan layar terkirim + opsi nambah lagi
+      $('#successTitle').textContent = `Pesanan #${no} Terkirim!`;
+      $('#successBody').textContent = 'Sudah masuk ke layar kasir. Mau nambah pesanan lagi?';
       $('#successModal').classList.add('open');
       document.body.style.overflow = 'hidden';
-    }, 400);
-    toast(`Pesanan #${no} diperbarui ✏️`);
-    return;
+    }, 500);
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
   }
-
-  // Mode BARU: ambil nomor global berikutnya
-  const no = await DB.nextOrderNo();
-
-  const order = {
-    id: String(no),
-    no,
-    ts: new Date().toISOString(),
-    items,
-    subtotal: total,
-    diskon: 0,
-    total,
-    bayar: 0,
-    kembalian: 0,
-    nama: '',
-    meja: state.meja || '',
-    catatan,
-    order_type: state.orderType,
-    metode: '',
-    status: 'baru',
-    origin: 'app',
-  };
-  Store.saveOrder(order);
-
-  toast(`Pesanan #${no} masuk ke kasir ✅`);
-  state.cart = {};
-  setTimeout(() => {
-    closeCart();
-    refreshAll();
-    // Tampilkan layar terkirim + opsi nambah lagi
-    $('#successTitle').textContent = `Pesanan #${no} Terkirim!`;
-    $('#successBody').textContent = 'Sudah masuk ke layar kasir. Anak-anak mau nambah pesanan lagi?';
-    $('#successModal').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }, 600);
 }
 
 // ---------- TOAST ----------

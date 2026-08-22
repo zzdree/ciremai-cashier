@@ -10,8 +10,8 @@ const CONFIG = {
   // Ganti dengan nomor WhatsApp resmi warung (format internasional tanpa +)
   waNomor: '6281234567890',
   jamBuka: 'Setiap hari · Buka 24 Jam',
-  alamat: 'Kampus UNNES, Sekaran, Gunungpati, Kota Semarang',
-  gmapsUrl: 'https://www.google.com/maps/search/?api=1&query=RM%20Ciremai%20UNNES%20Semarang',
+  alamat: 'X93V+8WX, Jl. Kalimasada, Sekaran, Kec. Gn. Pati, Kota Semarang, Jawa Tengah 50229',
+  gmapsUrl: 'https://maps.app.goo.gl/Dzp9H1tu6BkAkfSV8',
   // Database cloud (opsional). Set enabled=true setelah isi url & key dari Supabase.
   // Gratis di https://supabase.com — lihat README untuk skema SQL-nya.
   supabase: {
@@ -27,6 +27,13 @@ const CONFIG = {
 
 // URL katalog dengan nomor meja (untuk QR code)
 CONFIG.mejaUrl = (no) => {
-  const base = location.origin + location.pathname.replace(/kasir\.html$/, 'index.html');
-  return `${base}?meja=${no}`;
+  const loc = window.location;
+  let path = loc.pathname
+    .replace(/\/admin(?:\/.*)?$/, '/')
+    .replace(/\/kasir(?:\/.*)?$/, '/')
+    .replace(/(?:admin|kasir)\.html$/, 'index.html');
+  if (!path.endsWith('index.html')) {
+    path = path.replace(/\/$/, '') + '/index.html';
+  }
+  return `${loc.origin}${path}?meja=${no}`;
 };
