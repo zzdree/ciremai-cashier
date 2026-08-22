@@ -82,12 +82,13 @@ function renderPesanan() {
       const statusTag = o.status === 'diproses'
         ? '<span class="status-tag on">⏳ Diproses</span>'
         : '<span class="status-tag new">🆕 Baru</span>';
+      const label = `#${o.no ?? o.id}`;
       return `
         <div class="order-card" data-id="${o.id}">
           <div class="oc-head">
             <div>
-              <div class="oc-name">👤 ${o.nama || 'Tanpa nama'}</div>
-              <div class="oc-meta">🕐 ${waktu} · ${o.order_type || 'makan di tempat'}${o.meja ? ' · Meja ' + o.meja : ''}</div>
+              <div class="oc-name">🧾 Order ${label}</div>
+              <div class="oc-meta">🕐 ${waktu} · ${o.order_type || 'makan di tempat'}</div>
             </div>
             ${statusTag}
           </div>
@@ -119,7 +120,7 @@ function takeOrder(id) {
   Store.setCurrentOrder({ ...o, status: 'diproses' });
 
   $('#orderContext').hidden = false;
-  $('#orderContext').innerHTML = `📥 Pesanan <b>${o.nama || ''}</b> (${o.order_type || ''}${o.meja ? ' · Meja ' + o.meja : ''}) — keranjang sudah terisi. Tambah item jika kurang, lalu bayar.`;
+  $('#orderContext').innerHTML = `📥 Order <b>#${o.no ?? o.id}</b> (${o.order_type || ''}) — keranjang sudah terisi. Tambah item jika kurang, lalu bayar.`;
 
   $$('.tab-btn[data-view]').forEach((b) => b.classList.toggle('active', b.dataset.view === 'kasir'));
   $('#view-kasir-wrap').style.display = '';
@@ -368,9 +369,10 @@ function bindConfirm() {
     const items = Object.entries(pos.cart).map(([id, qty]) => `${qty}× ${namaById(id)}`).join(', ');
     const metode = ($('input[name="metode"]:checked') || {}).value || 'cash';
     const cur = Store.getCurrentOrder();
+    const head = cur ? `🧾 Order #${cur.no ?? cur.id}` : 'Struk Kasir';
     $('#confirmBody').innerHTML = `
       <div style="background:var(--bg);border-radius:12px;padding:12px 14px;margin-bottom:10px;">
-        <div style="font-weight:700;margin-bottom:6px;">${cur && cur.nama ? '📥 Pesanan: ' + cur.nama : 'Struk Kasir'}</div>
+        <div style="font-weight:700;margin-bottom:6px;">${head}</div>
         <div style="color:var(--ink-soft);font-size:.9rem;">${items}</div>
       </div>
       <div class="r-row"><span>Total</span><span>${Store.rupiah(total)}</span></div>

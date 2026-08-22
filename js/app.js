@@ -282,7 +282,7 @@ function renderCartItems() {
 }
 
 // ---------- CHECKOUT → WHATSAPP ----------
-function submitOrder(e) {
+async function submitOrder(e) {
   e.preventDefault();
 
   const entries = Object.entries(state.cart);
@@ -291,14 +291,8 @@ function submitOrder(e) {
     return;
   }
 
-  const nama = $('#custName').value.trim();
   const catatan = $('#custNote').value.trim();
-
-  if (!nama) {
-    toast('Isi nama dulu ya 🙏');
-    $('#custName').focus();
-    return;
-  }
+  const no = await DB.nextOrderNo();
 
   const items = entries.map(([id, qty]) => ({
     id, nama: namaById(id), harga: hargaById(id), qty,
@@ -306,7 +300,8 @@ function submitOrder(e) {
 
   // Simpan ke cloud (masuk antrian kasir, status 'baru')
   const order = {
-    id: Store.nextId(),
+    id: String(no),
+    no,
     ts: new Date().toISOString(),
     items,
     subtotal: cartTotal(),
@@ -314,8 +309,8 @@ function submitOrder(e) {
     total: cartTotal(),
     bayar: 0,
     kembalian: 0,
-    nama,
-    meja: state.meja || '',
+    nama: '',
+    meja: '',
     catatan,
     order_type: state.orderType,
     metode: '',
@@ -324,7 +319,7 @@ function submitOrder(e) {
   };
   Store.saveOrder(order);
 
-  toast('Pesanan masuk ke kasir ✅');
+  toast(`Pesanan #${no} masuk ke kasir ✅`);
   state.cart = {};
   setTimeout(() => { closeCart(); refreshAll(); }, 600);
 }

@@ -94,5 +94,22 @@ const DB = (() => {
     } catch { return null; }
   }
 
-  return { aktif, simpan, hariIni, ambilOrderBaru, updateOrder, ambilOrderById };
+  // Ambil nomor order global berikutnya (+1 selamanya) via RPC sequence
+  async function nextOrderNo() {
+    if (!aktif()) return null;
+    try {
+      const res = await fetch(`${cfg().url}/rest/v1/rpc/next_order_no`, {
+        method: 'POST',
+        headers: headers(),
+        body: '{}',
+      });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch (e) {
+      console.warn('[DB] gagal ambil nomor order:', e);
+      return null;
+    }
+  }
+
+  return { aktif, simpan, hariIni, ambilOrderBaru, updateOrder, ambilOrderById, nextOrderNo };
 })();
