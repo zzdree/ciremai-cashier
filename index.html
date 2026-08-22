@@ -10,12 +10,14 @@
     (function() {
       try {
         const saved = localStorage.getItem('ciremai_theme');
-        if (saved) {
-          document.documentElement.setAttribute('data-theme', saved);
-        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        if (saved === 'dark') {
           document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
         }
-      } catch(e) {}
+      } catch(e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
     })();
   </script>
   <link rel="canonical" href="https://zzdree.github.io/ciremai-cashier/order" />
