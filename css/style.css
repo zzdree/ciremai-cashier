@@ -435,13 +435,15 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
 }
 .topbar-brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; }
 .topbar-brand .brand-badge { width: 36px; height: 36px; font-size: 1rem; border-radius: 11px; }
-.topbar-actions { display: flex; gap: 8px; }
+.topbar-actions { display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.topbar-actions::-webkit-scrollbar { display: none; }
 .tab-btn {
   padding: 9px 16px; border-radius: 999px;
   background: rgba(251,247,239,.12);
   border: 1px solid rgba(251,247,239,.22);
   color: var(--cream); font-weight: 600; font-size: .84rem;
   transition: background .2s ease;
+  flex-shrink: 0;
 }
 .tab-btn:hover { background: rgba(251,247,239,.22); }
 .tab-btn.active { background: var(--gold); border-color: var(--gold); color: var(--ink); }
