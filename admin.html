@@ -31,17 +31,23 @@
   <!-- ============ TOPBAR ============ -->
   <header class="topbar" role="banner">
     <div class="topbar-inner container" style="max-width:1280px;">
-      <div class="topbar-brand">
-        <div class="brand-badge" aria-hidden="true">C</div>
-        <span>Admin · <span id="tbNama">RM. Ciremai</span></span>
+      <div class="topbar-left">
+        <div class="topbar-brand">
+          <div class="brand-badge" aria-hidden="true">C</div>
+          <span>Admin · <span id="tbNama">RM. Ciremai</span></span>
+        </div>
+        <nav class="topbar-actions" role="tablist" aria-label="Navigasi Menu Admin">
+          <button class="tab-btn active" data-view="kasir" role="tab" aria-selected="true" aria-controls="view-kasir-wrap">🛒 Kasir (POS)</button>
+          <button class="tab-btn" data-view="pesanan" role="tab" aria-selected="false" aria-controls="view-pesanan">📥 Pesanan Masuk <span class="tab-badge" id="pesananBadge" hidden aria-live="polite">0</span></button>
+          <button class="tab-btn" data-view="riwayat" role="tab" aria-selected="false" aria-controls="view-riwayat">📜 Laporan & Riwayat</button>
+        </nav>
       </div>
-      <nav class="topbar-actions" role="tablist" aria-label="Navigasi Menu Admin">
-        <button class="tab-btn active" data-view="kasir" role="tab" aria-selected="true" aria-controls="view-kasir-wrap">🛒 Kasir (POS)</button>
-        <button class="tab-btn" data-view="pesanan" role="tab" aria-selected="false" aria-controls="view-pesanan">📥 Pesanan Masuk <span class="tab-badge" id="pesananBadge" hidden aria-live="polite">0</span></button>
-        <button class="tab-btn" data-view="riwayat" role="tab" aria-selected="false" aria-controls="view-riwayat">📜 Laporan & Riwayat</button>
-        <a class="tab-btn" href="order/" style="text-decoration:none;" aria-label="Buka Mode Pelanggan">📱 Mode Pelanggan</a>
-        <button class="tab-btn btn-logout" id="btnLogout" title="Keluar / Kunci Kasir" aria-label="Keluar dari mode admin">🔒 Logout</button>
-      </nav>
+      <div class="topbar-right">
+        <button class="btn-topbar-logout" id="btnLogout" title="Keluar / Kunci Kasir" aria-label="Keluar dari mode admin">
+          <span aria-hidden="true">🔒</span>
+          <span>Logout</span>
+        </button>
+      </div>
     </div>
   </header>
 
