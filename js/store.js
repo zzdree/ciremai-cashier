@@ -82,6 +82,16 @@ const Store = {
   },
 
   // ---- Util ----
+  escapeHTML(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, (m) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    }[m]));
+  },
   rupiah(n) {
     return 'Rp ' + Number(n).toLocaleString('id-ID');
   },

@@ -981,6 +981,45 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
 .toggle.habis { background: #B9AC99; }
 .toggle.habis::after { transform: translateX(20px); }
 
+/* ============ QR CODE MEJA ============ */
+.qr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 18px;
+}
+.qr-card {
+  text-align: center;
+  padding: 16px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  box-shadow: var(--shadow-sm);
+  transition: transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s ease;
+}
+.qr-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.qr-card img {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 10px;
+  border-radius: 8px;
+}
+.qr-card .qr-no {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+.qr-card .qr-url {
+  font-size: .68rem;
+  color: var(--ink-soft);
+  word-break: break-all;
+  margin-top: 4px;
+}
+
 /* ============ STRUK (thermal receipt) ============ */
 .receipt-wrap {
   display: flex; justify-content: center;
@@ -1212,32 +1251,7 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
   color: #9a3412;
   margin-bottom: 10px;
 }
-.metode-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-.metode-opt {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--bg);
-  border: 1.5px solid var(--line);
-  border-radius: 12px;
-  padding: 8px 12px;
-  font-size: .9rem;
-  cursor: pointer;
 }
-.metode-opt input { accent-color: var(--red); }
-.piutang-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  padding: 10px 12px;
-  background: #fef2f2;
-  border: 1.5px dashed #fca5a5;
-  border-radius: 12px;
-  font-size: .9rem;
-  cursor: pointer;
-}
-.piutang-row input { width: 18px; height: 18px; accent-color: var(--red); }
 
 /* Print: Struk PDF & QR Code Meja */
 @media print {

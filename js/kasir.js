@@ -175,25 +175,27 @@ async function renderPesanan() {
     }
     list.innerHTML = rows.map((o) => {
       const items = (o.items || []).map((i) => `
-        <div class="oc-item"><span>${i.qty}× ${i.nama}</span><span>${Store.rupiah(i.harga * i.qty)}</span></div>`).join('');
+        <div class="oc-item"><span>${i.qty}× ${Store.escapeHTML(i.nama)}</span><span>${Store.rupiah(i.harga * i.qty)}</span></div>`).join('');
       const waktu = new Date(o.ts).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
       const statusTag = o.status === 'diproses'
         ? '<span class="status-tag on">⏳ Diproses</span>'
         : '<span class="status-tag new">🆕 Baru</span>';
       const label = `#${o.no ?? o.id}`;
       const diubahTag = o.diubah ? ' <span class="status-tag edit">✏️ Diubah</span>' : '';
-      const mejaTag = o.meja ? ` · 🪑 Meja ${o.meja}` : '';
+      const mejaTag = o.meja ? ` · 🪑 Meja ${Store.escapeHTML(o.meja)}` : '';
+      const catatanEsc = o.catatan ? Store.escapeHTML(o.catatan) : '';
+      const orderTypeEsc = Store.escapeHTML(o.order_type || 'Makan di Tempat');
       return `
         <div class="order-card" data-id="${o.id}">
           <div class="oc-head">
             <div>
               <div class="oc-name">🧾 Order ${label}${diubahTag}</div>
-              <div class="oc-meta">🕐 ${waktu} · ${o.order_type || 'Makan di Tempat'}${mejaTag}</div>
+              <div class="oc-meta">🕐 ${waktu} · ${orderTypeEsc}${mejaTag}</div>
             </div>
             ${statusTag}
           </div>
           <div class="oc-items">${items}</div>
-          ${o.catatan ? `<div class="oc-note">📝 ${o.catatan}</div>` : ''}
+          ${catatanEsc ? `<div class="oc-note">📝 ${catatanEsc}</div>` : ''}
           <div class="oc-foot">
             <div class="oc-total">${Store.rupiah(o.total || 0)}</div>
             <div style="display:flex;gap:8px;">
@@ -315,7 +317,8 @@ function changePosQty(id, delta) {
 }
 
 function renderPosCart() {
-  const wrap = $('#posItems');
+  const wrap = $('#posCartList') || $('#posItems');
+  if (!wrap) return;
   const entries = Object.entries(pos.cart);
   if (!entries.length) {
     wrap.innerHTML = `<div class="cart-empty"><div class="big">🧺</div>Klik menu di kiri<br />untuk menambah item.</div>`;
@@ -516,16 +519,16 @@ function bindConfirm() {
     if (!Object.keys(pos.cart).length) { toast('Keranjang kosong'); return; }
     if (!piutang && bayar < total) { toast('Uang kurang 😅'); return; }
 
-    const items = Object.entries(pos.cart).map(([id, qty]) => `${qty}× ${namaById(id)}`).join(', ');
+    const items = Object.entries(pos.cart).map(([id, qty]) => `${qty}× ${Store.escapeHTML(namaById(id))}`).join(', ');
     const metode = ($('input[name="metode"]:checked') || {}).value || 'cash';
     const cur = Store.getCurrentOrder();
     const head = cur ? `🧾 Order #${cur.no ?? cur.id}` : 'Struk Kasir';
     $('#confirmBody').innerHTML = `
-      <div style="background:var(--bg);border-radius:12px;padding:12px 14px;margin-bottom:10px;">
-        <div style="font-weight:700;margin-bottom:6px;">${head}</div>
+      <div style="background:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;">
+        <div style="font-weight:700;margin-bottom:6px;color:var(--ink);">${head}</div>
         <div style="color:var(--ink-soft);font-size:.9rem;">${items}</div>
       </div>
-      <div class="r-row"><span>Total</span><span>${Store.rupiah(total)}</span></div>
+      <div class="r-row"><span>Total</span><span style="font-weight:700;color:var(--red);">${Store.rupiah(total)}</span></div>
       <div class="r-row"><span>Metode</span><span>${metode === 'qris' ? '📱 QRIS' : '💵 Cash'}</span></div>
       <div class="r-row"><span>Status</span><span>${piutang ? '💳 Piutang (nanti)' : '✅ Lunas'}</span></div>`;
     $('#confirmModal').classList.add('open');
