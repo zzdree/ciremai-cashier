@@ -89,11 +89,26 @@ function bindTabs() {
   $$('.tab-btn[data-view]').forEach((btn) => {
     btn.addEventListener('click', () => showView(btn.dataset.view));
   });
+
+  // Toggle suara notif order baru
+  const muteBtn = $('#btnMute');
+  if (muteBtn) {
+    const syncMute = () => { muteBtn.textContent = __muted ? '🔇' : '🔊'; };
+    syncMute();
+    muteBtn.addEventListener('click', () => {
+      __muted = !__muted;
+      localStorage.setItem('ciremai_mute', __muted ? '1' : '0');
+      syncMute();
+      toast(__muted ? 'Suara notif dimatikan 🔇' : 'Suara notif menyala 🔊');
+    });
+  }
 }
 
 // ---------- SOUND: notif order baru ----------
 let __knownOrderIds = new Set();
+let __muted = localStorage.getItem('ciremai_mute') === '1';
 function playDing() {
+  if (__muted) return;
   try {
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (!Ctx) return;
@@ -148,12 +163,13 @@ function renderPesanan() {
         : '<span class="status-tag new">🆕 Baru</span>';
       const label = `#${o.no ?? o.id}`;
       const diubahTag = o.diubah ? ' <span class="status-tag edit">✏️ Diubah</span>' : '';
+      const mejaTag = o.meja ? ` · 🪑 Meja ${o.meja}` : '';
       return `
         <div class="order-card" data-id="${o.id}">
           <div class="oc-head">
             <div>
               <div class="oc-name">🧾 Order ${label}${diubahTag}</div>
-              <div class="oc-meta">🕐 ${waktu} · ${o.order_type || 'makan di tempat'}</div>
+              <div class="oc-meta">🕐 ${waktu} · ${o.order_type || 'makan di tempat'}${mejaTag}</div>
             </div>
             ${statusTag}
           </div>
