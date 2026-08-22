@@ -71,23 +71,29 @@ Dibuat sebagai rujukan agar UI/UX konsisten, rapi, dan nyaman digunakan baik dal
 ## 4. Components
 
 ### 4.1 Theme Toggle Button (`.theme-toggle-btn`)
+- **Default Sistem:** **Light Mode (Mode Terang)** aktif secara default untuk pengunjung baru.
 - Tombol lingkaran elegan (`width: 40px`, `height: 40px`, `border-radius: 50%`) dengan latar kaca blur transparan.
 - Ikon dinamis: `🌙` saat mode terang aktif (klik untuk ganti ke gelap), `☀️` saat mode gelap aktif (klik untuk ganti ke terang).
 - Penempatan:
-  - **Halaman Order (`index.html`)**: Di dalam `.hero-nav` tepat di sebelah tombol **Admin**.
+  - **Halaman Order (`index.html`)**: Di dalam `.hero-nav` tepat di sebelah tombol **Admin** (tanpa icon gerigi).
   - **Halaman Kasir (`admin.html`)**: Di dalam `.topbar-right` tepat di sebelah tombol **Logout**.
 
 ### 4.2 Tombol Logout Minimalis (`.btn-topbar-logout`)
 - Didesain ringkas tanpa teks berlebih (`width: 36px`, `height: 36px`, `border-radius: 50%`) menggunakan ikon SVG keluar pintu yang bersih.
 - Warna merah bertenaga (`#B83208`) dengan efek hover elevasi dan tooltip informatif.
 
-### 4.3 Kartu Menu & Stepper
+### 4.3 Notifikasi Toast Pojok Kanan Bawah (`.toast`)
+- Ditempatkan presisi di sudut kanan bawah (`right: 24px; bottom: 24px;` pada desktop, `right: 14px; bottom: 18px;` pada mobile).
+- Memakai token tema kontras tinggi (`--toast-bg`, `--toast-color`, `--toast-border`).
+- Animasi transisi halus (*slide up & fade*) dengan durasi tayang otomatis 2.2 detik.
+
+### 4.4 Kartu Menu & Stepper
 - Permukaan kartu berdimensi dengan wadah emoji beraksen emas rempah.
 - Dilengkapi stepper kuantitas interaktif (`−` [n] `+`) yang muncul langsung saat item dipilih.
 - State: `default`, `hover` (elevasi naik 3px), dan `soldout` (warna redup + tag "Habis").
 
-### 4.4 Panel POS Kasir Modern
-- **Filter Kategori Chip**: Pilihan cepat *Semua*, *Makanan*, dan *Minuman* untuk navigasi menu instan.
+### 4.5 Panel POS Kasir Modern
+- **Filter Kategori Chip Terpadu**: Navigasi instan 8 kategori (*Semua*, *Magelangan*, *Nasi Goreng*, *Nasi Kuning*, *Mie Dokdok*, *Mie Goreng/Rebus*, *Ayam & Crispy*, *Minuman*).
 - **Wadah Hitung Terpadu (`.pos-calc-card`)**: Menggabungkan daftar item struk, total harga, metode bayar (Tunai/QRIS), dan preset nominal cepat (`10k`–`100k`).
 - **Kalkulasi Kembalian Otomatis**: Menampilkan status hijau saat bayar pas/kembalian dan status merah saat nominal kurang.
 
@@ -95,9 +101,9 @@ Dibuat sebagai rujukan agar UI/UX konsisten, rapi, dan nyaman digunakan baik dal
 
 ## 5. Responsive & Print Layout
 
-- **Mobile (< 640px)**: Grid 1 kolom, sticky bottom bar untuk keranjang, modal bottom-sheet.
-- **Tablet & Desktop (≥ 900px)**: Grid menu fleksibel, cart panel kasir bertengger rapi di kolom kanan.
-- **Print PDF A4 1 Halaman**:
+- **Mobile (< 640px)**: Grid 1 kolom, sticky bottom bar untuk keranjang, modal bottom-sheet, topbar fleksibel dengan horizontal scroll tab.
+- **Tablet & Desktop (≥ 900px)**: Grid menu 2–4 kolom, cart panel kasir bertengger rapi di kolom kanan (sticky 78px).
+- **Print Struk Termal 80mm & PDF A4 1 Halaman**:
   - CSS `@media print` dengan aturan `@page { size: A4 portrait; margin: 12mm 15mm; }`.
   - Hanya menampilkan struk belanja terformat rapi dan menyembunyikan seluruh kontrol antarmuka web.
 
