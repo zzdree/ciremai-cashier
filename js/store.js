@@ -30,6 +30,10 @@ const Store = {
     const all = this.getTrx();
     all.unshift(trx);
     localStorage.setItem(this.KEYS.trx, JSON.stringify(all));
+    // Sinkron ke cloud (jika diaktifkan) — tidak memblokir kasir
+    if (typeof DB !== 'undefined' && DB.aktif()) {
+      DB.simpan(trx);
+    }
   },
   todayTrx() {
     const today = new Date().toDateString();

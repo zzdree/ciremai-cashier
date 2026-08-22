@@ -12,4 +12,11 @@ const CONFIG = {
   jamBuka: 'Setiap hari · 16.00 – 02.00 WIB',
   alamat: 'Jl. Raya Ciremai, Kuningan, Jawa Barat',
   gmapsUrl: 'https://maps.app.goo.gl/fteodwrCPNJeU1GJ9',
+  // Database cloud (opsional). Set enabled=true setelah isi url & key dari Supabase.
+  // Gratis di https://supabase.com — lihat README untuk skema SQL-nya.
+  supabase: {
+    enabled: false,
+    url: '', // contoh: 'https://xxxx.supabase.co'
+    key: '', // anon key dari Settings → API
+  },
 };
