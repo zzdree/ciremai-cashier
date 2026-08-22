@@ -23,38 +23,38 @@ Dibuat sebagai rujukan agar UI/UX konsisten, rapi, dan nyaman digunakan baik dal
 
 | Token | Nilai | Penggunaan |
 |---|---|---|
-| `--cream` | `#F2ECE1` | Background canvas utama (hangat, berdimensi, ramah mata) |
-| `--cream-2` | `#E5DCBA` | Background sekunder / badge netral / chip inactive |
+| `--cream` | `#F4EFE6` | Background canvas utama (hangat, berdimensi, ramah mata) |
+| `--cream-2` | `#E8DFCE` | Background sekunder / badge netral / chip inactive |
 | `--paper` | `#FFFFFF` | Permukaan kartu menu, modal, & panel POS (kontras tinggi) |
-| `--ink` | `#1C150E` | Teks judul & angka utama (WCAG AAA) |
-| `--ink-soft` | `#5C4F44` | Teks sekunder, subtitle, & placeholder |
-| `--line` | `#DCD0BD` | Border kartu & garis pemisah halus |
-| `--line-strong` | `#C4B49C` | Border tombol & pemisah tegas |
+| `--ink` | `#18120B` | Teks judul & angka utama (rasio kontras 16:1 WCAG AAA) |
+| `--ink-soft` | `#54473C` | Teks sekunder, subtitle, & placeholder (rasio kontras 7:1 WCAG AAA) |
+| `--line` | `#D8CCB8` | Border kartu & garis pemisah halus |
+| `--line-strong` | `#BAA990` | Border tombol & pemisah tegas |
 | `--red` | `#B83208` | Aksen utama: harga, badge pesanan, tag peringatan |
 | `--red-dark` | `#8F2404` | Hover tombol merah & status kritis |
 | `--red-soft` | `#FDECE5` | Latar badge promo, tag kurang, & focus ring |
-| `--green` | `#204B33` | Brand navbar/topbar, tombol checkout/bayar utama |
-| `--green-soft` | `#E1EBE4` | Latar badge sukses & kembalian pas/lebih |
-| `--gold` | `#D9881A` | Aksen brand badge "C", highlight menu, tombol aktif |
-| `--gold-soft` | `#FDF3E1` | Wadah emoji kartu menu & rank best-seller |
+| `--green` | `#1C482E` | Brand navbar/topbar, tombol checkout/bayar utama |
+| `--green-soft` | `#E1ECE5` | Latar badge sukses & kembalian pas/lebih |
+| `--gold` | `#C9770E` | Aksen brand badge "C", highlight menu, tombol aktif |
+| `--gold-soft` | `#FCF1DE` | Wadah emoji kartu menu & rank best-seller |
 
 ### 2.2 Mode Gelap (`[data-theme="dark"]`)
 
 | Token | Nilai | Penggunaan |
 |---|---|---|
-| `--cream` | `#12110F` | Background canvas malam bernuansa charcoal hangat |
-| `--cream-2` | `#1A1815` | Background sekunder / input wrapper gelap |
-| `--paper` | `#1C1916` | Permukaan kartu & panel gelap pekat solid |
-| `--ink` | `#F6EFE6` | Teks gading terang bertinta tajam (WCAG AAA) |
-| `--ink-soft` | `#A89C8F` | Teks sekunder hangat & placeholder |
-| `--line` | `#2E2822` | Garis batas kartu tegas & presisi |
-| `--line-strong` | `#443C33` | Border tombol & pemisah kontras |
-| `--red` | `#E24B1D` | Merah cabai bara menyala untuk harga & aksi kritis |
-| `--red-soft` | `#2D1812` | Latar tag kurang & seleksi merah gelap |
-| `--green` | `#163623` | Hijau Ciremai malam |
-| `--green-soft` | `#122519` | Latar badge sukses & kembalian pas |
-| `--gold` | `#E89D2C` | Emas rempah terang untuk tombol aktif & highlight |
-| `--gold-soft` | `#2D2113` | Wadah emoji kartu menu gelap |
+| `--cream` | `#12100E` | Background canvas malam bernuansa charcoal pekat |
+| `--cream-2` | `#1B1814` | Background sekunder / input wrapper gelap |
+| `--paper` | `#1F1B17` | Permukaan kartu & panel gelap solid kontras tegas |
+| `--ink` | `#FAF4EB` | Teks putih gading terang benderang (rasio kontras 16:1 WCAG AAA) |
+| `--ink-soft` | `#B5A89A` | Teks sekunder terang & placeholder (rasio kontras 7.2:1 WCAG AAA) |
+| `--line` | `#383027` | Garis batas kartu jelas & presisi |
+| `--line-strong` | `#54493D` | Border tombol & pemisah tegas |
+| `--red` | `#FF5A26` | Merah cabai bara menyala terang untuk harga & aksi kritis |
+| `--red-soft` | `#33150C` | Latar tag kurang & seleksi merah gelap |
+| `--green` | `#2B874F` | Hijau Ciremai malam terang & tegas |
+| `--green-soft` | `#102919` | Latar badge sukses & kembalian pas |
+| `--gold` | `#ECA32B` | Emas rempah menyala untuk tombol aktif & highlight |
+| `--gold-soft` | `#302211` | Wadah emoji kartu menu gelap |
 
 ---
 
