@@ -1144,20 +1144,36 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
 .r-row span:first-child { word-break: break-word; }
 .r-small { font-size: .7rem; }
 
-/* ============ TOAST ============ */
+/* ============ TOAST (NOTIFIKASI POJOK KANAN BAWAH) ============ */
 .toast {
-  position: fixed; left: 50%; bottom: 96px; z-index: 200;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--ink); color: var(--cream);
-  padding: 12px 22px;
-  border-radius: 999px;
-  font-weight: 700; font-size: .88rem;
-  opacity: 0; pointer-events: none;
-  transition: all .3s cubic-bezier(.2,.8,.2,1);
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  left: auto;
+  z-index: 200;
+  transform: translateY(20px) scale(0.95);
+  background: var(--ink);
+  color: var(--cream);
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  font-weight: 700;
+  font-size: .88rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s cubic-bezier(.2,.8,.2,1);
   box-shadow: var(--shadow-lg);
   white-space: nowrap;
+  max-width: calc(100vw - 36px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
 
 /* ============ FOOTER ============ */
 .footer {
@@ -1241,6 +1257,15 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
   .topbar-actions { gap: 6px; }
   .tab-btn { padding: 8px 12px; font-size: .78rem; }
   .receipt { width: 100%; max-width: 320px; }
+
+  /* Toast di mobile: tetap presisi di pojok kanan bawah */
+  .toast {
+    right: 14px;
+    bottom: 18px;
+    font-size: .84rem;
+    padding: 10px 16px;
+    border-radius: 10px;
+  }
 }
 
 /* ============ PRINT (struk termal) ============ */
