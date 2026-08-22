@@ -94,15 +94,20 @@ atau neon.
 - Garis pemisah `----`, rata tengah untuk header/footer.
 - Tombol "Cetak" → `window.print()` dengan CSS `@media print` khusus.
 
-### 5.6 Tabs (Kasir)
-- 3 tab: Kasir · Riwayat · Menu. Aktif = underline merah + tebal.
-- Konten hanya 1 view yang tampil (lainnya `display:none`).
+### 5.6 Tabs (Admin & Kasir)
+- 5 tab terpadu:
+  1. `🛒 Kasir (POS)` — Panel transaksi walk-in & hitung kembalian cepat.
+  2. `📥 Pesanan Masuk` — Antrean pesanan live pelanggan + notifikasi audio.
+  3. `📜 Laporan & Riwayat` — Riwayat harian, ekspor CSV, dan menu terlaris.
+  4. `📋 Kelola Menu` — Toggle status ketersediaan stok habis/tersedia.
+  5. `🔳 Cetak QR Meja` — Generator & cetak 10 kartu QR meja.
+- Tab aktif ditandai underline merah + font tebal. Hanya 1 view yang tampil dalam satu waktu.
 
 ### 5.7 Quick Cash Buttons
-- Nominal pas / 20rb / 50rb / 100rb. Mempercepat input uang tunai.
+- Nominal pas / 10rb / 20rb / 50rb / 100rb. Mempercepat input uang tunai tanpa perlu mengetik manual.
 
 ### 5.8 Toast
-- Muncul bawah-tengah, auto-hide 2.2 detik, background gelap + teks putih.
+- Muncul di bawah layar, auto-hide 2.2 detik, background gelap + teks putih + ikon status.
 
 ---
 
@@ -110,11 +115,11 @@ atau neon.
 
 | State | Penanganan |
 |-------|-----------|
-| Loading | (minimal — data lokal instan; spinner hanya saat sync cloud) |
-| Empty | Ilustrasi emoji + teks "Belum ada transaksi hari ini." |
-| Sold out | Kartu abu + tag "Habis", tidak bisa diklik |
-| Error (bayar kurang) | Baris "Kurang" merah, tombol bayar disabled |
-| Success | Modal struk + toast "Kembalian: Rp ..." |
+| Loading | Data lokal instan; status sync Supabase non-blocking di background |
+| Empty | Ilustrasi emoji + teks informatif "Belum ada transaksi hari ini" / "Belum ada pesanan masuk" |
+| Sold out | Kartu abu + tag "Habis", stepper terkunci & tidak bisa dipesan pelanggan |
+| Error (bayar kurang) | Notifikasi nominal kurang, tombol bayar disabled |
+| Success | Modal struk + toast feedback interaktif |
 
 ---
 
@@ -123,91 +128,90 @@ atau neon.
 | Breakpoint | Perilaku |
 |-----------|----------|
 | < 600px | 1 kolom, cart sticky bawah, panel kasir static |
-| 600–899px | 2 kolom menu |
-| ≥ 900px | 3 kolom, cart panel sticky kanan (`top: 82px`) |
+| 600–899px | 2 kolom menu, adaptasi flex layout |
+| ≥ 900px | 3 kolom menu, cart panel kasir sticky kanan (`top: 82px`) |
 
 ---
 
 ## 8. Inspirasi Dribbble → Adaptasi
 
-| Tren Dribbble | Yang kita ambil |
-|---------------|-----------------|
-| Card-based menu grid | ✅ Kartu menu horizontal, shadow lembut |
-| Large touch targets | ✅ Tombol ≥ 48px, stepper besar |
-| Bold price hierarchy | ✅ Harga merah tebal |
-| Minimal top bar | ✅ Header ramping + search sticky |
-| Receipt-style detail | ✅ Struk monospace thermal |
-| Soft neutral palette | ✅ Cream + merah + emas (brand) |
+| Tren Dribbble | Implementasi Aktual |
+|---------------|---------------------|
+| Card-based menu grid | ✅ Kartu menu horizontal berbayang lembut & micro-animation |
+| Large touch targets | ✅ Tombol ≥ 48px, stepper besar ramah jempol |
+| Bold price hierarchy | ✅ Harga merah tebal & kontras tinggi |
+| Minimal top bar | ✅ Header ramping, brand badge, dan tab navigasi terintegrasi |
+| Receipt-style detail | ✅ Struk monospace thermal bersih |
+| Soft neutral palette | ✅ Cream (`#FBF7EF`) + merah cabai (`#E23B2E`) + emas (`#E8A33D`) |
 
 ---
 
 ## 9. Accessibility
 
-- Kontras warna memenuhi WCAG AA.
-- Semua elemen interaktif bisa diakses keyboard (Tab/Enter/Esc).
-- `aria-label` pada tombol ikon & toggle.
-- `prefers-reduced-motion` dihormati (transisi bisa dikurangi).
+- Kontras warna memenuhi standar WCAG AA.
+- Semua elemen interaktif dapat diakses keyboard (Tab/Enter/Esc).
+- `aria-label` disematkan pada tombol ikon, close button, dan toggle mute audio.
+- `prefers-reduced-motion` dihormati.
 
 ---
 
 ## 10. Do's & Don'ts
 
 **✅ Do:**
-- Pakai token warna dari `:root`.
-- Jaga jarak antar elemen (minimal 8px grid).
-- Beri feedback instan pada tiap aksi.
+- Pakai token warna resmi dari `:root`.
+- Jaga jarak antar elemen (grid kelipatan 8px).
+- Berikan audio & visual feedback instan pada tiap interaksi pengguna.
 
 **❌ Don't:**
-- Jangan pakai warna di luar palette tanpa alasan.
-- Jangan buat tombol < 44px di layar sentuh.
-- Jangan overload 1 layar dengan terlalu banyak info.
-- Jangan gunakan font selain Fraunces & Plus Jakarta Sans.
+- Jangan gunakan warna di luar palette warung tanpa alasan fungsional.
+- Jangan membuat target sentuh < 44px.
+- Jangan memecah rute admin dan kasir karena keduanya adalah satu kesatuan dashboard.
 
 ---
 
 ## 11. Fitur QR Code Meja
 
-Pelanggan scan QR di meja → langsung buka katalog dengan nomor meja terdeteksi otomatis.
+Pelanggan scan QR di meja → langsung membuka katalog `/order` dengan nomor meja terdeteksi otomatis.
 
-- **URL:** `index.html?meja=N` → badge "🪑 Meja N" muncul di hero, dan `Meja: N` otomatis masuk ke pesan WhatsApp.
-- **Generator (kasir):** tab **QR Meja** merender N kartu QR via `api.qrserver.com` (image, tanpa library JS).
-- **Print:** tombol "Cetak Semua QR" → `@media print` menyembunyikan semua kecuali `#view-qr`, grid jadi 3 kolom, tiap kartu `break-inside: avoid`.
+- **URL:** `/order?meja=N` → badge "🪑 Meja N" muncul di hero, dan nomor meja otomatis tersimpan pada payload pesanan.
+- **Generator (Admin):** Tab **Cetak QR Meja** merender N kartu QR via CDN `api.qrserver.com`.
+- **Print Layout:** Tombol "Cetak Semua QR" → `@media print` menyembunyikan semua elemen lain, grid diformat 3 kolom per halaman, dan kartu tidak terpotong (`break-inside: avoid`).
 - **Konfigurasi:** `CONFIG.jumlahMeja` (default 10) + `CONFIG.mejaUrl(no)`.
 
-## 12. Alur Pencatatan Order (Pelanggan → Kasir)
+---
 
-Sistem pencatatan tanpa kasir harus input manual. Pelanggan bisa memesan sendiri,
-lalu pesanan otomatis masuk antrian layar kasir.
+## 12. Alur Pencatatan & Pemesanan Real-time
 
-### 12.1 Dua pintu masuk
-1. **Pelanggan (`/`)** — pilih menu, isi nama + catatan + (jika di warung) meja, lalu
-   **Kirim Pesanan ke Kasir**. Order tersimpan ke Supabase (`status=baru`, `origin=app`)
-   sekaligus membuka chat WA sebagai cadangan.
-2. **Kasir input manual (`/kasir`)** — pelanggan yang tak mau pesan sendiri cukup
-   menyebutkan pesanan; kasir klik menu di panel transaksi seperti biasa.
+### 12.1 Dua Pintu Masuk
+1. **Pelanggan (`/order` atau `/`)** — Memilih menu, menentukan jumlah & catatan, lalu mengirim pesanan langsung ke kasir. Pesanan mendapatkan nomor antrean order `#N` dan tersimpan ke Supabase (`status=baru`, `origin=app`).
+2. **Kasir Walk-in (`/admin`)** — Untuk pelanggan yang memesan langsung di kasir; kasir memilih menu pada panel kasir POS dan memproses pembayaran seketika.
 
-### 12.2 Antrian kasir
-- Tab **📥 Pesanan** menampilkan semua order `status=baru|diproses` (realtime dari DB).
-- Tiap kartu `.order-card`: nama, meja, waktu, items, catatan, total, badge status.
-- Tombol **➡️ Ambil & Proses** mengisi keranjang kasir dengan item order, menandai
-  `status=diproses`, lalu pindah ke tab Transaksi. Kasir masih bisa **menambah/mengurang
-  item** kalau kurang.
+### 12.2 Antrean Kasir Live
+- Tab **📥 Pesanan Masuk** menampilkan semua order berstatus `baru` atau `diproses`.
+- Terdapat notifikasi suara *ding* saat pesanan baru masuk secara otomatis.
+- Tombol **➡️ Ambil & Proses** mengisi keranjang kasir dengan rincian order, mengubah status menjadi `diproses`, dan membuka tab POS kasir untuk penambahan menu jika diperlukan.
+- Tombol **✕ Batalkan** untuk menolak pesanan yang dibatalkan pelanggan.
 
-### 12.3 Pembayaran & konfirmasi
-- Pilihan metode: **💵 Cash** atau **📱 QRIS** (kertas fisik di warung — tidak ada
-  pembayaran digital di app).
-- Checkbox **💳 Bayar Nanti (Piutang)** → dicatat dengan `status=piutang`, belum lunas.
-- Tombol **Bayar** memunculkan **modal konfirmasi** ("Pastikan Pesanan Benar") berisi
-  item, total, metode, dan status sebelum diproses — mencegah salah input.
-- Setelah konfirmasi: struk tampil, transaksi tersimpan ke DB (`lunas`/`piutang`),
-  antrian otomatis refresh.
+### 12.3 Pembayaran & Konfirmasi
+- Pilihan metode: **💵 Cash** atau **📱 QRIS** (kertas fisik warung).
+- Opsi **Piutang / Kasbon** untuk pesanan yang belum dibayar lunas.
+- Modal konfirmasi memastikan kebenaran nominal dan rincian sebelum transaksi dicatat.
+- Transaksi otomatis tersimpan ke Supabase dan localStorage, serta memperbarui antrean secara instan.
 
-### 12.4 Cetak PDF
-- Tombol **🖨️ Cetak Struk (PDF)** memanggil `window.print()`; `@media print`
-  menyembunyikan semua kecuali `#receiptModal` → hasil cetak/PDF bersih hanya struk.
+### 12.4 Cetak Struk (Thermal / PDF)
+- Tombol **🖨️ Cetak Struk (PDF)** memanggil `window.print()`.
+- Rule `@media print` khusus memastikan hanya struk belanja yang tercetak tanpa header/tombol antarmuka web.
 
-### 12.5 Skema data (Supabase `transaksi`)
-`id, ts, items[], subtotal, diskon, total, bayar, kembalian, nama, meja, catatan,
-order_type, metode (cash|qris), status (baru|diproses|lunas|piutang|batal), origin (app|kasir)`
+---
 
-_Dokumen living — update saat ada perubahan komponen atau palette._
+## 13. Skema Data Terpadu (`transaksi`)
+
+```sql
+transaksi (
+  id, no, ts, items[], subtotal, diskon, total, bayar, kembalian,
+  nama, meja, catatan, order_type, metode (cash|qris),
+  status (baru|diproses|lunas|piutang|batal), origin (app|kasir), updated_at
+)
+```
+
+_Dokumen living — selalu diselaraskan bersama evolusi fitur repositori._

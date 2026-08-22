@@ -2,169 +2,131 @@
 
 | | |
 |---|---|
-| **Produk** | Ciremai Cashier — web app pencatatan penjualan (POS) + pemesanan pelanggan |
-| **Lokasi bisnis** | [RM. Ciremai UNNES](https://maps.app.goo.gl/Dzp9H1tu6BkAkfSV8) — X93V+8WX, Jl. Kalimasada, Sekaran, Kec. Gn. Pati, Kota Semarang, Jawa Tengah 50229 |, Jawa Tengah 50229 |
+| **Produk** | Ciremai Cashier — Web App POS Kasir & Pemesanan Pelanggan Real-time |
+| **Lokasi bisnis** | [RM. Ciremai UNNES](https://maps.app.goo.gl/Dzp9H1tu6BkAkfSV8) — X93V+8WX, Jl. Kalimasada, Sekaran, Kec. Gn. Pati, Kota Semarang, Jawa Tengah 50229 |
 | **Folder proyek** | `C:\ANDREAS\ciremai-cashier` |
-| **Deployment target** | GitHub Pages (static hosting, gratis) |
-| **Versi dokumen** | 1.0 — 22 Agustus 2026 |
+| **Deployment target** | GitHub Pages (static hosting gratis) |
+| **Versi dokumen** | 1.1 — 23 Agustus 2026 |
 
 ---
 
 ## 1. Latar Belakang
 
-RM. Ciremai adalah warung makan bergaya *burjo* (magelangan, nasi goreng, mie dokdok) yang saat ini mencatat pesanan dan uang secara manual. Masalah yang ingin diselesaikan:
+RM. Ciremai adalah warung makan bergaya *burjo* (magelangan, nasi goreng, mie dokdok) yang melayani pelanggan mahasiswa dan umum di sekitar kampus UNNES Semarang.
 
-1. **Pencatatan tidak rapi** — omzet harian sulit diketahui akurat, rawan salah hitung kembalian.
-2. **Pesanan pelanggan** belum ada kanal digital — pelanggan harus datang/menelepon.
-3. **Info menu** hanya ada di banner fisik — tidak bisa diakses dari HP.
+Sistem digital ini dibuat untuk menyelesaikan 3 kebutuhan utama:
+1. **Pencatatan POS Kasir yang cepat & akurat** — kalkulasi kembalian otomatis, dukungan tunai/QRIS/kasbon, dan laporan omzet instan.
+2. **Pemesanan Mandiri (Self-Order) Pelanggan** — pelanggan duduk di meja, scan QR meja, pilih menu, dan kirim pesanan langsung ke antrean kasir tanpa perlu antre di meja kasir.
+3. **Katalog Menu Digital 24 Jam** — daftar menu, harga transparan, dan status ketersediaan stok yang selalu tersinkronisasi.
+
+---
 
 ## 2. Tujuan & Metrik Sukses
 
-| Tujuan | Metrik |
-|---|---|
-| Semua transaksi tercatat digital | 100% transaksi lewat kasir dalam 1 minggu |
-| Ketepatan hitung kembalian | 0 keluhan salah hitung |
-| Pelanggan bisa lihat menu & pesan dari HP | Link menu dibagikan (QR di meja/banner) |
-| Pemilik tahu omzet harian | Laporan harian tersedia 1 klik |
+| Tujuan | Metrik | Status |
+|---|---|---|
+| Transaksi tercatat digital | 100% transaksi tersimpan di Supabase + localStorage | ✅ Tercapai |
+| Hitung kembalian cepat & tanpa salah | Validasi uang kurang & kalkulasi otomatis | ✅ Tercapai |
+| Pelanggan pesan langsung dari meja | Scan QR meja → nomor order global `#N` masuk kasir | ✅ Tercapai |
+| Pemilik & kasir tahu omzet harian | Statistik real-time & download laporan Excel/CSV | ✅ Tercapai |
 
-## 3. Pengguna
+---
 
-### Persona A — Petugas Kasir (pemilik/staff)
-- Input pesanan pelanggan yang datang langsung (dine-in / bungkus).
-- Terima uang tunai, hitung kembalian, cetak/beri struk.
-- Lihat riwayat transaksi & rekap omzet hari itu.
+## 3. Persona Pengguna
 
-### Persona B — Pelanggan
-- Buka halaman menu dari HP (via link/QR).
-- Pilih menu, isi nama & catatan, kirim pesanan via **WhatsApp** ke warung.
+### Persona A — Kasir / Pengelola Warung (`/admin`)
+- Menerima pesanan langsung dari antrean real-time (dengan notifikasi suara *ding*).
+- Menambah/mengubah item pesanan jika pelanggan menambah pesanan di tempat.
+- Menerima pembayaran tunai (quick money buttons) / QRIS kertas / piutang (kasbon).
+- Cetak struk termal/PDF dan cetak lembar kartu QR meja.
+- Mengelola ketersediaan stok menu (tandai Habis/Tersedia).
+- Memantau rekap omzet, jumlah transaksi, dan menu terlaris hari ini.
 
-## 4. Ruang Lingkup (v1 / MVP)
+### Persona B — Pelanggan (`/order` atau `/`)
+- Scan QR code di meja warung atau buka tautan di browser.
+- Memilih menu, menentukan jumlah (stepper), memilih opsi (Makan di Tempat / Bungkus), dan menulis catatan khusus (contoh: "pedas manis, jangan pakai sawi").
+- Mengirim pesanan langsung ke kasir dan mendapatkan nomor antrean order `#N`.
+- Dapat menambah atau mengubah pesanan yang sama secara fleksibel.
 
-### 4.1 Halaman Pelanggan (`index.html`)
-- **Katalog menu** dikelompokkan per kategori: Magelangan, Nasi Goreng, Mie Dokdok, Minuman.
-- Pencarian menu + filter chip kategori.
-- Item **habis** (ditandai kasir) tampil nonaktif.
-- **Keranjang**: ubah qty, hapus item, subtotal realtime.
-- **Checkout**: form nama pemesan, tipe pesanan (Makan di Tempat / Bungkus), catatan → tombol **"Pesan via WhatsApp"** membuka `wa.me` dengan rincian pesanan terformat.
-- Info warung: alamat + link Google Maps, jam buka.
+---
 
-### 4.2 Halaman Admin & Kasir (`admin.html` / `/admin`) — POS & Manajemen
-- Grid menu + pencarian + filter kategori.
-- Antrean pesanan real-time dari pelanggan dengan notifikasi suara.
-- Panel keranjang: qty ±, hapus, **diskon nominal**, total.
-- **Pembayaran**: Tunai (input nominal + tombol cepat + kembalian otomatis) & QRIS kertas, atau opsi Piutang (kasbon).
-- **Simpan transaksi**: Sinkronisasi Supabase + fallback `localStorage`.
-- **Struk & QR Meja**: Layout cetak responsif via `window.print()` untuk struk thermal/PDF dan cetak kartu QR meja.
-- **Riwayat & Laporan harian**: Total omzet, jumlah transaksi, item terlaris, ekspor **CSV / Excel**.
-- **Kelola menu**: Toggle *Habis/Tersedia* per item — tersimpan & langsung tercermin di halaman pelanggan.
+## 4. Ruang Lingkup Sistem
 
-### 4.3 Di Luar Scope v1 (Non-goals)
-- Payment gateway online otomatis (cukup QRIS statis / tunai di kasir).
-- Multi outlet, manajemen stok bahan baku, akun login multi-user kompleks.
+### 4.1 Halaman Pelanggan (`index.html` / `/order`)
+- **Katalog Menu**: Dikelompokkan per kategori (Magelangan, Nasi Goreng, Mie Dokdok, Minuman).
+- **Pencarian Cepat & Filter Chip**: Filter kategori interaktif.
+- **Deteksi Nomor Meja**: Otomatis mendeteksi parameter `?meja=N` dari QR code meja.
+- **Status Stok Real-time**: Menu yang ditandai habis oleh kasir otomatis berstatus nonaktif.
+- **Keranjang Belanja**: Sticky cart bottom bar, stepper jumlah item, hitung total instan.
+- **Pengiriman Pesanan**: Pesanan terkirim ke Supabase dengan nomor urut global `#N` dan tersimpan di antrean kasir.
+- **Modal Sukses & Opsi Tambah/Ubah**: Pelanggan dapat menambah menu ke pesanan yang sama atau membuat pesanan baru.
 
-## 5. Arsitektur Teknis
+### 4.2 Halaman Admin & Kasir (`admin.html` / `/admin`)
+- **Proteksi Akses**: Layar kunci PIN kasir (konfigurasi di `CONFIG.kasirPin`).
+- **5 Tab Navigasi Utama**:
+  1. `🛒 Kasir (POS)`: Pencarian menu, penyesuaian qty, diskon nominal, kalkulasi kembalian tunai, QRIS kertas, dan piutang/kasbon.
+  2. `📥 Pesanan Masuk`: Antrean pesanan real-time dari pelanggan, notifikasi suara, tombol ambil & proses, serta tombol pembatalan pesanan.
+  3. `📜 Laporan & Riwayat`: Ringkasan omzet hari ini, jumlah transaksi, menu terlaris, cetak ulang struk, dan ekspor CSV/Excel.
+  4. `📋 Kelola Menu`: Toggle ketersediaan stok (Tersedia / Habis).
+  5. `🔳 Cetak QR Meja`: Generator dan cetak kartu QR meja 1–10 secara rapi (print stylesheet).
 
-```
-┌─────────────────────────────────────────────┐
-│              Static Web App                  │
-│  index.html (/order) ──► js/app.js   (Pelanggan)
-│  admin.html (/admin) ──► js/kasir.js (Admin/Kasir)
-│        └── shared: css/style.css             │
-│                   js/config.js  (profil/db)  │
-│                   js/data.js    (menu)       │
-│                   js/db.js      (supabase)   │
-│                   js/store.js   (localStorage)│
-└─────────────────────────────────────────────┘
-Deploy: GitHub Pages (branch main, folder root)
-```
+---
 
-- **Stack**: HTML5 + Vanilla CSS + Vanilla JS. Tanpa framework, tanpa build step, tanpa server.
-- **Persistensi**: `localStorage` per perangkat/browser.
-  - `ciremai_menu_habis` — daftar ID menu yang habis (diset kasir).
-  - `ciremai_trx` — array transaksi (kasir).
-  - `ciremai_counter` — nomor urut harian transaksi.
-- **Komunikasi pesanan pelanggan**: deep-link WhatsApp (`https://wa.me/<nomor>?text=...`).
+## 5. Arsitektur & Struktur Teknis
 
-### Data Model
-
-```ts
-MenuItem    { id: string, nama: string, harga: number, kat: "magelangan"|"nasi-goreng"|"mie-dokdok"|"minuman", desc?: string }
-Transaction { id: string, ts: ISOString, items: {id,nama,harga,qty}[], subtotal, diskon, total, bayar, kembalian }
+```text
+┌──────────────────────────────────────────────────────────────┐
+│                       RM. CIREMAI WEB APP                    │
+│                                                              │
+│  [Pelanggan]   index.html (/order) ──► js/app.js             │
+│  [Admin/Kasir] admin.html (/admin) ──► js/kasir.js           │
+│                                                              │
+│  Shared Core Modules:                                        │
+│  ├── css/style.css    (Design tokens, responsive, & print)   │
+│  ├── js/data.js       (Daftar katalog menu & kategori)       │
+│  ├── js/config.js     (Konfigurasi warung, PIN, & meja)      │
+│  ├── js/db.js         (Koneksi Supabase REST API & RPC)      │
+│  └── js/store.js      (Local storage manager & format rupiah)│
+└──────────────────────────────────────────────────────────────┘
 ```
 
-## 6. Data Menu (dari banner, 22 Agustus 2026)
+### Data Model (`schema.sql` / Supabase Postgres)
 
-### Makanan
+```sql
+transaksi (
+  id          text primary key,
+  no          integer,                -- Nomor order global (#1, #2, #3...)
+  ts          timestamptz not null,   -- Timestamp pesanan
+  items       jsonb not null,         -- [{ id, nama, harga, qty }]
+  subtotal    integer not null,
+  diskon      integer default 0,
+  total       integer not null,
+  bayar       integer not null,
+  kembalian   integer not null,
+  nama        text default '',
+  meja        text default '',        -- Nomor meja (1-10)
+  catatan     text default '',        -- Catatan khusus pelanggan
+  order_type  text default 'Makan di Tempat', -- 'Makan di Tempat' | 'Bungkus'
+  metode      text default 'cash',    -- 'cash' | 'qris'
+  status      text default 'baru',    -- 'baru' | 'diproses' | 'lunas' | 'piutang' | 'batal'
+  origin      text default 'app',     -- 'app' | 'kasir'
+  updated_at  timestamptz default now()
+)
+```
 
-**Magelangan**
-| Item | Harga |
-|---|---|
-| Magelangan Telur | Rp 15.000 |
-| Magelangan Ayam | Rp 19.000 |
-| Magelangan Sosis | Rp 17.000 |
-| Magelangan Baso | Rp 17.000 |
-| Magelangan Complete | Rp 22.000 |
+---
 
-**Nasi Goreng**
-| Item | Harga |
-|---|---|
-| Nasi Goreng Telur | Rp 13.000 |
-| Nasi Goreng Ayam | Rp 18.000 |
-| Nasi Goreng Sosis | Rp 15.000 |
-| Nasi Goreng Baso | Rp 15.000 |
-| Nasi Goreng Complete | Rp 21.000 |
-
-**Mie Dokdok**
-| Item | Harga |
-|---|---|
-| Mie Dokdok Telur | Rp 13.000 |
-| Mie Dokdok Ayam | Rp 17.000 |
-| Mie Dokdok Sosis | Rp 15.000 |
-| Mie Dokdok Baso | Rp 15.000 |
-| Mie Dokdok Complete | Rp 19.000 |
-
-### Minuman *(harga standar warung kopi/burjo — dapat diedit di `js/data.js`)*
-
-| Item | Harga |
-|---|---|
-| Air Es | Rp 1.000 |
-| Es Teh Manis / Teh Panas | Rp 3.000 |
-| Nutrisari / Es Jeruk | Rp 4.000 |
-| Kopi Hitam | Rp 5.000 |
-| Kopi Susu | Rp 5.000 |
-| Capucino | Rp 5.000 |
-| Susu Putih / Susu Coklat | Rp 5.000 |
-| Extra Joss | Rp 5.000 |
-| Good Day | Rp 6.000 |
-| Milo | Rp 6.000 |
-
-## 7. Desain
-
-- **Nuansa**: hangat ala gerobak malam Indonesia — krem (`#FBF7EF`), merah bara (`#C43C12`), hijau gunung Ciremai (`#27553B`), emas (`#E9A23B`).
-- **Tipografi**: Fraunces (display/judul) + Plus Jakarta Sans (UI/body) — Google Fonts.
-- **Mobile-first**: halaman pelanggan dioptimalkan untuk HP; bar keranjang menempel di bawah layar.
-- **Struk cetak**: gaya struk termal (font mono, lebar ~300px).
-
-## 8. Milestone
+## 6. Status Milestone
 
 | Fase | Deliverable | Status |
 |---|---|---|
-| F1 | PRD + struktur proyek + aset ilustrasi | ✅ |
-| F2 | Halaman pelanggan (katalog, keranjang, checkout WA) | 🔨 |
-| F3 | Halaman kasir (POS, struk, riwayat, laporan CSV) | 🔨 |
-| F4 | Uji lokal + push ke GitHub + aktifkan Pages | ⏳ |
+| F1 | PRD, arsitektur teknis, dan sistem desain | ✅ Selesai |
+| F2 | Halaman pemesanan pelanggan (`index.html` & `/order`) | ✅ Selesai |
+| F3 | Dashboard Admin & Kasir POS (`admin.html` & `/admin`) | ✅ Selesai |
+| F4 | Sinkronisasi Supabase Real-time + Notifikasi Suara | ✅ Selesai |
+| F5 | Dukungan Print Struk PDF & Cetak Lembar QR Meja | ✅ Selesai |
+| F6 | Deployment GitHub Pages + GitHub Actions keepalive | ✅ Selesai |
 
-## 9. Risiko & Mitigasi
+---
 
-| Risiko | Mitigasi |
-|---|---|
-| Data hilang jika browser/cache dibersihkan | Ekspor CSV harian; backup otomatis v2 (Supabase) |
-| Nomor WA belum ada | Config terpusat `js/config.js`, mudah diganti |
-| Pesanan WA tidak masuk sistem kasir | Kasir meng-input ulang pesanan WA sebagai transaksi (v2: sinkron otomatis) |
-| localStorage terikat perangkat | Kasir tetap 1 perangkat khusus |
-
-## 10. Keputusan Terbuka
-
-- [x] Jam buka: **buka 24 jam**, setiap hari (konfirmasi pemilik).
-- [x] Alamat lengkap: **Kampus UNNES, Sekaran, Gunungpati, Kota Semarang** (konfirmasi pemilik).
-- [ ] Nomor WhatsApp resmi warung — tidak dipakai lagi (pesanan langsung masuk kasir).
+© RM. Ciremai Semarang — Dibuat untuk kecepatan dan kemudahan operasional warung.
