@@ -6,11 +6,11 @@ Aplikasi kasir & pemesanan warung sederhana. Pelanggan pesan dari HP, langsung m
 
 | Tujuan | URL |
 |--------|-----|
-| **Pembeli (katalog & order)** | https://zzdree.github.io/ciremai-cashier/kosong |
+| **Pembeli (katalog & order)** | https://zzdree.github.io/ciremai-cashier/ |
 | **Pembeli (order)** | https://zzdree.github.io/ciremai-cashier/order |
 | **Kasir / Admin** | https://zzdree.github.io/ciremai-cashier/admin |
 
-> `/kosong` dan `/order` sama-sama mengarah ke halaman pembeli. `/admin` mengarah ke halaman kasir.
+> `/` dan `/order` sama-sama mengarah ke halaman pembeli. `/admin` mengarah ke halaman kasir.
 
 ## ✨ Fitur
 

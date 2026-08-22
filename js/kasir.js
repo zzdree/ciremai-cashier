@@ -25,6 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#btnPrintReceipt').addEventListener('click', () => window.print());
   // Muat antrian pesanan saat buka
   renderPesanan();
+  // Auto-refresh antrian tiap 5 detik (tanpa tombol Segarkan)
+  window.__pesananTimer = setInterval(() => {
+    // Jangan ganggu kalau sedang ambil order / ada modal terbuka
+    if (document.querySelector('#receiptModal.open') || document.querySelector('#confirmModal.open')) return;
+    renderPesanan();
+  }, 5000);
 
   // Tutup modal dengan Esc
   document.addEventListener('keydown', (e) => {
