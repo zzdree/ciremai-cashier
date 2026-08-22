@@ -9,6 +9,8 @@ const state = {
   kat: 'semua',
   q: '',
   orderType: 'Makan di Tempat',
+  editNo: null,    // nomor order yang sedang diedit (ubah/tambah item)
+  editId: null,    // id order yang diedit
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -72,7 +74,22 @@ document.addEventListener('DOMContentLoaded', () => {
     $('#successModal').classList.remove('open');
     document.body.style.overflow = '';
   };
+  // Ubah pesanan yang SAMA (tambah/ubah item ke #N)
+  $('#btnEditOrder').addEventListener('click', () => {
+    const no = ($('#successTitle').textContent.match(/#(\d+)/) || [])[1];
+    state.editNo = Number(no);
+    state.editId = String(no);
+    state.cart = {};
+    closeSuccess();
+    openCart();
+    toast(`Edit pesanan #${no} — tambah/ubah lalu kirim`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
   $('#btnAddMore').addEventListener('click', () => {
+    // Pesan BARU (nomor beda)
+    state.editNo = null;
+    state.editId = null;
+    state.cart = {};
     closeSuccess();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
@@ -310,21 +327,45 @@ async function submitOrder(e) {
   }
 
   const catatan = $('#custNote').value.trim();
-  const no = await DB.nextOrderNo();
-
   const items = entries.map(([id, qty]) => ({
     id, nama: namaById(id), harga: hargaById(id), qty,
   }));
+  const total = cartTotal();
 
-  // Simpan ke cloud (masuk antrian kasir, status 'baru')
+  // Mode EDIT: update order yang sama (ubah/tambah item ke #N)
+  if (state.editId) {
+    await DB.updateOrder(state.editId, {
+      items, total, subtotal: total, catatan,
+      updated_at: new Date().toISOString(),
+      diubah: true,
+    });
+    const no = state.editNo;
+    state.cart = {};
+    state.editNo = null;
+    state.editId = null;
+    setTimeout(() => {
+      closeCart();
+      refreshAll();
+      $('#successTitle').textContent = `Pesanan #${no} Diperbarui!`;
+      $('#successBody').textContent = 'Perubahan sudah masuk ke layar kasir. Mau ubah lagi?';
+      $('#successModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }, 400);
+    toast(`Pesanan #${no} diperbarui ✏️`);
+    return;
+  }
+
+  // Mode BARU: ambil nomor global berikutnya
+  const no = await DB.nextOrderNo();
+
   const order = {
     id: String(no),
     no,
     ts: new Date().toISOString(),
     items,
-    subtotal: cartTotal(),
+    subtotal: total,
     diskon: 0,
-    total: cartTotal(),
+    total,
     bayar: 0,
     kembalian: 0,
     nama: '',

@@ -772,6 +772,7 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
   border-radius: 999px;
   white-space: nowrap;
 }
+.status-tag.edit { background: #fff3cd; color: #8a6d00; }
 .status-tag.new { background: #fef3c7; color: #92400e; }
 .status-tag.on { background: #dbeafe; color: #1e40af; }
 
@@ -854,3 +855,5 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
 .success-body { color: var(--ink-soft, #6b5b52); margin: 0 0 20px; font-size: .95rem; }
 .success-actions { display: flex; flex-direction: column; gap: 10px; }
 .success-actions .btn-secondary { background: var(--bg, #faf4ef); }
+.btn-outline { background: transparent !important; color: var(--red, #c43c12); border: 2px solid var(--red, #c43c12); }
+.btn-outline:hover { background: rgba(196,60,18,.08) !important; }

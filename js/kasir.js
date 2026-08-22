@@ -116,11 +116,12 @@ function renderPesanan() {
         ? '<span class="status-tag on">⏳ Diproses</span>'
         : '<span class="status-tag new">🆕 Baru</span>';
       const label = `#${o.no ?? o.id}`;
+      const diubahTag = o.diubah ? ' <span class="status-tag edit">✏️ Diubah</span>' : '';
       return `
         <div class="order-card" data-id="${o.id}">
           <div class="oc-head">
             <div>
-              <div class="oc-name">🧾 Order ${label}</div>
+              <div class="oc-name">🧾 Order ${label}${diubahTag}</div>
               <div class="oc-meta">🕐 ${waktu} · ${o.order_type || 'makan di tempat'}</div>
             </div>
             ${statusTag}
