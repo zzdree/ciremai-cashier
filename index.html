@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RM. Ciremai Kuningan — Menu & Pemesanan Online</title>
+  <meta name="description" content="Menu dan pemesanan online RM. Ciremai Kuningan. Magelangan, Nasi Goreng, Mie Dokdok & minuman hangat. Pesan lewat WhatsApp, makan di tempat atau bungkus." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E9A23B'/><text x='50' y='68' font-size='52' text-anchor='middle'>🍛</text></svg>" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="container hero-inner">
+      <div>
+        <div class="brand-row" style="margin-bottom:28px;">
+          <div class="brand-mark">
+            <div class="brand-badge">C</div>
+            <div>
+              <div class="brand-name" id="brandNama">RM. Ciremai</div>
+              <div class="brand-sub" id="brandKota">Kuningan, Jawa Barat</div>
+            </div>
+          </div>
+          <a class="kasir-link" href="kasir.html">🧾 Kasir</a>
+        </div>
+
+        <div class="hero-copy">
+          <h1>Laper tengah malam? Sini, kita masak.</h1>
+          <p>Magelangan, nasi goreng, dan mie dokdok khas warung — dimasak dadakan saat kamu pesan.</p>
+          <div class="hero-meta">
+            <span class="meta-pill">🕒 <span id="jamBuka">16.00 – 02.00 WIB</span></span>
+            <a class="meta-pill" href="#" id="gmapsLink" target="_blank" rel="noopener">📍 Lihat di Google Maps</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ilustrasi SVG hero -->
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 380 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- meja -->
+          <ellipse cx="190" cy="228" rx="170" ry="26" fill="#16321F"/>
+          <!-- piring magelangan -->
+          <ellipse cx="130" cy="180" rx="88" ry="34" fill="#FFFDF8"/>
+          <ellipse cx="130" cy="174" rx="76" ry="27" fill="#F4EDDF"/>
+          <path d="M78 172c10-18 40-28 56-24s30 14 46 10c8-2 12-6 14-9 2 14-8 30-32 35-30 6-72 4-84-12z" fill="#E9A23B"/>
+          <circle cx="112" cy="164" r="11" fill="#C43C12"/>
+          <circle cx="150" cy="158" r="7" fill="#27553B"/>
+          <!-- telur mata sapi -->
+          <ellipse cx="196" cy="150" rx="26" ry="19" fill="#FFFDF8"/>
+          <circle cx="196" cy="149" r="8" fill="#E9A23B"/>
+          <!-- gelas es teh -->
+          <path d="M262 128l6 74c1 8 7 13 15 13h6c8 0 14-5 15-13l6-74z" fill="#FBF0DC"/>
+          <path d="M265 148l4 54c1 8 7 12 14 12s13-4 14-12l4-54c-10 6-36 6-36 0z" fill="#D98A3E"/>
+          <ellipse cx="285" cy="129" rx="23" ry="7" fill="#FFF"/>
+          <rect x="296" y="96" width="5" height="60" rx="2.5" fill="#C43C12" transform="rotate(8 298 126)"/>
+          <!-- uap -->
+          <path d="M120 118c-6-8 4-14-2-24" stroke="#FBF7EF" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/>
+          <path d="M140 112c-6-8 4-14-2-24" stroke="#FBF7EF" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"/>
+          <path d="M196 116c-6-8 4-14-2-24" stroke="#FBF7EF" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/>
+          <!-- bintang/langit -->
+          <circle cx="40" cy="36" r="2.5" fill="#FBF7EF" opacity=".7"/>
+          <circle cx="330" cy="28" r="2" fill="#FBF7EF" opacity=".55"/>
+          <circle cx="300" cy="58" r="1.6" fill="#FBF7EF" opacity=".4"/>
+          <circle cx="70" cy="70" r="1.8" fill="#FBF7EF" opacity=".45"/>
+          <!-- siluet gunung Ciremai -->
+          <path d="M0 92l52-38 38 26 44-20 50 30H0z" fill="#1D402C"/>
+          <path d="M200 90l60-34 46 22 42-14 32 26z" fill="#1D402C"/>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ MENU ============ -->
+  <main class="menu-section container">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="searchInput" placeholder="Cari menu… misal: magelangan, es teh" autocomplete="off" />
+    </div>
+
+    <div class="chips" id="chips" role="tablist"></div>
+
+    <div id="menuList"><!-- dirender oleh js/app.js --></div>
+  </main>
+
+  <!-- ============ CART BAR ============ -->
+  <div class="cart-bar" id="cartBar">
+    <div class="container cart-bar-inner">
+      <div class="cart-bar-info">
+        <strong id="cartBarTotal">Rp 0</strong><br />
+        <small id="cartBarCount">0 item dipilih</small>
+      </div>
+      <button class="btn-cart-open" id="btnOpenCart">
+        🛒 Lihat Keranjang
+        <span class="cart-count" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ MODAL KERANJANG + CHECKOUT ============ -->
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Keranjangmu</h2>
+        <button class="modal-close" id="btnCloseCart" aria-label="Tutup">✕</button>
+      </div>
+
+      <div id="cartItems"><!-- isi keranjang --></div>
+
+      <div class="cart-summary">
+        <div class="summary-row"><span>Subtotal</span><span id="sumSubtotal">Rp 0</span></div>
+        <div class="summary-row total"><span>Total</span><span id="sumTotal">Rp 0</span></div>
+      </div>
+
+      <form id="checkoutForm">
+        <div class="field">
+          <label for="custName">Nama Kamu</label>
+          <input type="text" id="custName" placeholder="misal: Andreas" required maxlength="40" />
+        </div>
+
+        <div class="field">
+          <label>Mau Makan di Mana?</label>
+          <div class="order-type">
+            <button type="button" class="type-btn active" data-type="Makan di Tempat">🍽️ Makan di Tempat</button>
+            <button type="button" class="type-btn" data-type="Bungkus">🥡 Bungkus</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="custNote">Catatan <small style="color:var(--ink-soft);font-weight:500;">(opsional)</small></label>
+          <textarea id="custNote" placeholder="misal: pedas level 3, tanpa timun…" maxlength="200"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" id="btnWa">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.4 14.1c-.2.7-1.2 1.3-2 1.4-.5.1-1.2.2-3.4-.7-2.9-1.2-4.8-4.1-4.9-4.3-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.6-.4.8-.4h.6c.2 0 .4-.1.7.5.2.6.8 2 .9 2.2.1.2.1.4 0 .6-.3.6-.6.8-.4 1.2.7 1.2 1.6 2.1 2.8 2.7.3.2.5.1.7-.1l1-1.1c.2-.3.4-.2.7-.1l2.2 1c.3.2.5.3.6.4.1.2.1.8-.1 1.5z"/></svg>
+          Pesan via WhatsApp
+        </button>
+        <p class="wa-note">Pesanan akan dikirim sebagai chat WhatsApp ke RM. Ciremai.<br />Pembayaran dilakukan di tempat (tunai).</p>
+
+        <button type="button" class="btn-secondary" id="btnClearCart">🗑️ Kosongkan Keranjang</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container">
+      <strong id="footNama">RM. Ciremai</strong> · <span id="footAlamat">Kuningan, Jawa Barat</span><br />
+      <span id="footJam">Setiap hari · 16.00 – 02.00 WIB</span><br /><br />
+      Dibuat dengan 🔥 untuk pecinta kuliner malam ·
+      <a href="https://github.com/zzdree" target="_blank" rel="noopener">@zzdree</a>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
