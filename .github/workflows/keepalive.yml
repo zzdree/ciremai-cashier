@@ -1,12 +1,11 @@
 name: Supabase Keepalive
 
-# Jaga project Supabase free tier agar tidak di-pause (idle 7 hari).
-# Cron harian mengirim 1 query REST API (anon key) -> dihitung sebagai aktivitas,
-# sehingga timer idle otomatis reset terus-menerus.
+# Jaga project Supabase free tier agar tidak di-pause otomatis karena idle 7 hari.
+# Mengirim query REST API berkala untuk mereset timer idle Supabase.
 on:
   schedule:
-    - cron: '23 4 * * *'   # tiap hari 04:23 UTC (acak, hindari puncak bersama)
-  workflow_dispatch: {}    # bisa dijalankan manual dari tab Actions
+    - cron: '15 */6 * * *'   # Berjalan setiap 6 jam (00:15, 06:15, 12:15, 18:15 UTC)
+  workflow_dispatch: {}      # Dapat ditrigger manual via tab Actions
 
 permissions:
   contents: read
@@ -15,17 +14,35 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping setiap project Supabase
+      - name: Ping Supabase Database
         env:
+          DEFAULT_URL: "https://lnxprlvmyhqxkzarrzac.supabase.co"
+          DEFAULT_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxueHBybHZteWhxeGt6YXJyemFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MDAwMDIsImV4cCI6MjEwMjk3NjAwMn0.fb4njNTFQZMcZPuvHE96i8zfX7CXCTGVN10A6wYDZUs"
           PROJECTS: ${{ secrets.SUPABASE_PROJECTS }}
         run: |
-          echo "$PROJECTS" | jq -c '.[]' | while read -r p; do
-            url=$(echo "$p" | jq -r '.url')
-            key=$(echo "$p" | jq -r '.key')
-            echo "-> Ping $url"
+          if [ -n "$PROJECTS" ]; then
+            echo "Menggunakan konfigurasi secrets.SUPABASE_PROJECTS..."
+            echo "$PROJECTS" | jq -c '.[]' | while read -r p; do
+              url=$(echo "$p" | jq -r '.url')
+              key=$(echo "$p" | jq -r '.key')
+              echo "-> Ping $url"
+              code=$(curl -sS -o /dev/null -w "%{http_code}" \
+                -H "apikey: $key" \
+                -H "Authorization: Bearer $key" \
+                "$url/rest/v1/transaksi?select=id&limit=1")
+              echo "   HTTP Status: $code"
+            done
+          else
+            echo "Menggunakan default target project RM. Ciremai..."
+            echo "-> Ping $DEFAULT_URL"
             code=$(curl -sS -o /dev/null -w "%{http_code}" \
-              -H "apikey: $key" \
-              -H "Authorization: Bearer $key" \
-              "$url/rest/v1/transaksi?select=id&limit=1")
-            echo "   HTTP $code"
-          done
+              -H "apikey: $DEFAULT_KEY" \
+              -H "Authorization: Bearer $DEFAULT_KEY" \
+              "$DEFAULT_URL/rest/v1/transaksi?select=id&limit=1")
+            echo "   HTTP Status: $code"
+            if [ "$code" -ne 200 ]; then
+              echo "⚠️ Peringatan: Status code $code"
+            else
+              echo "✅ Supabase aktif dan berhasil di-ping!"
+            fi
+          fi
