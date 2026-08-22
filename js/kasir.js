@@ -373,7 +373,6 @@ function doBayar() {
     id, nama: namaById(id), harga: hargaById(id), qty,
   }));
   const metode = ($('input[name="metode"]:checked') || {}).value || 'cash';
-  const piutang = $('#cbPiutang').checked;
 
   const trx = {
     id: Store.nextId(),
