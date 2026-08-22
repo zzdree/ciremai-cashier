@@ -92,19 +92,21 @@
 
   <!-- ============ HERO ============ -->
   <header class="hero" role="banner">
-    <div class="container hero-inner">
-      <div>
-        <div class="brand-row" style="margin-bottom:28px;">
-          <div class="brand-mark">
-            <div class="brand-badge" aria-hidden="true">C</div>
-            <div>
-              <div class="brand-name" id="brandNama">RM. Ciremai</div>
-              <div class="brand-sub" id="brandKota">Semarang, Jawa Tengah</div>
-            </div>
+    <div class="container">
+      <!-- Top Navbar (Full Width) -->
+      <nav class="hero-nav" aria-label="Navigasi Utama">
+        <div class="brand-mark">
+          <div class="brand-badge" aria-hidden="true">C</div>
+          <div>
+            <div class="brand-name" id="brandNama">RM. Ciremai</div>
+            <div class="brand-sub" id="brandKota">Semarang, Jawa Tengah</div>
           </div>
-          <a class="kasir-link" href="admin.html" aria-label="Buka Dashboard Admin dan Kasir">⚙️ Admin</a>
         </div>
+        <a class="kasir-link" href="admin.html" aria-label="Buka Dashboard Admin dan Kasir">⚙️ Admin</a>
+      </nav>
 
+      <!-- Hero Content -->
+      <div class="hero-inner">
         <div class="hero-copy">
           <div class="meja-badge" id="mejaBadge" hidden aria-live="polite">🪑 Meja <span id="mejaNo"></span></div>
           <h1>Laper tengah malam? Sini, kita masak.</h1>
@@ -114,40 +116,40 @@
             <a class="meta-pill" href="#" id="gmapsLink" target="_blank" rel="noopener noreferrer" aria-label="Buka lokasi di Google Maps">📍 Lihat di Google Maps</a>
           </div>
         </div>
-      </div>
 
-      <!-- Ilustrasi SVG hero -->
-      <div class="hero-art" aria-hidden="true">
-        <svg viewBox="0 0 380 260" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- meja -->
-          <ellipse cx="190" cy="228" rx="170" ry="26" fill="#16321F"/>
-          <!-- piring magelangan -->
-          <ellipse cx="130" cy="180" rx="88" ry="34" fill="#FFFDF8"/>
-          <ellipse cx="130" cy="174" rx="76" ry="27" fill="#F4EDDF"/>
-          <path d="M78 172c10-18 40-28 56-24s30 14 46 10c8-2 12-6 14-9 2 14-8 30-32 35-30 6-72 4-84-12z" fill="#E9A23B"/>
-          <circle cx="112" cy="164" r="11" fill="#C43C12"/>
-          <circle cx="150" cy="158" r="7" fill="#27553B"/>
-          <!-- telur mata sapi -->
-          <ellipse cx="196" cy="150" rx="26" ry="19" fill="#FFFDF8"/>
-          <circle cx="196" cy="149" r="8" fill="#E9A23B"/>
-          <!-- gelas es teh -->
-          <path d="M262 128l6 74c1 8 7 13 15 13h6c8 0 14-5 15-13l6-74z" fill="#FBF0DC"/>
-          <path d="M265 148l4 54c1 8 7 12 14 12s13-4 14-12l4-54c-10 6-36 6-36 0z" fill="#D98A3E"/>
-          <ellipse cx="285" cy="129" rx="23" ry="7" fill="#FFF"/>
-          <rect x="296" y="96" width="5" height="60" rx="2.5" fill="#C43C12" transform="rotate(8 298 126)"/>
-          <!-- uap -->
-          <path d="M120 118c-6-8 4-14-2-24" stroke="#FBF7EF" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/>
-          <path d="M140 112c-6-8 4-14-2-24" stroke="#FBF7EF" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"/>
-          <path d="M196 116c-6-8 4-14-2-24" stroke="#FBF7EF" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/>
-          <!-- bintang/langit -->
-          <circle cx="40" cy="36" r="2.5" fill="#FBF7EF" opacity=".7"/>
-          <circle cx="330" cy="28" r="2" fill="#FBF7EF" opacity=".55"/>
-          <circle cx="300" cy="58" r="1.6" fill="#FBF7EF" opacity=".4"/>
-          <circle cx="70" cy="70" r="1.8" fill="#FBF7EF" opacity=".45"/>
-          <!-- siluet gunung Ciremai -->
-          <path d="M0 92l52-38 38 26 44-20 50 30H0z" fill="#1D402C"/>
-          <path d="M200 90l60-34 46 22 42-14 32 26z" fill="#1D402C"/>
-        </svg>
+        <!-- Ilustrasi SVG hero -->
+        <div class="hero-art" aria-hidden="true">
+          <svg viewBox="0 0 380 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- meja -->
+            <ellipse cx="190" cy="228" rx="170" ry="26" fill="#16321F"/>
+            <!-- piring magelangan -->
+            <ellipse cx="130" cy="180" rx="88" ry="34" fill="#FFFDF8"/>
+            <ellipse cx="130" cy="174" rx="76" ry="27" fill="#F4EDDF"/>
+            <path d="M78 172c10-18 40-28 56-24s30 14 46 10c8-2 12-6 14-9 2 14-8 30-32 35-30 6-72 4-84-12z" fill="#E9A23B"/>
+            <circle cx="112" cy="164" r="11" fill="#C43C12"/>
+            <circle cx="150" cy="158" r="7" fill="#27553B"/>
+            <!-- telur mata sapi -->
+            <ellipse cx="196" cy="150" rx="26" ry="19" fill="#FFFDF8"/>
+            <circle cx="196" cy="149" r="8" fill="#E9A23B"/>
+            <!-- gelas es teh -->
+            <path d="M262 128l6 74c1 8 7 13 15 13h6c8 0 14-5 15-13l6-74z" fill="#FBF0DC"/>
+            <path d="M265 148l4 54c1 8 7 12 14 12s13-4 14-12l4-54c-10 6-36 6-36 0z" fill="#D98A3E"/>
+            <ellipse cx="285" cy="129" rx="23" ry="7" fill="#FFF"/>
+            <rect x="296" y="96" width="5" height="60" rx="2.5" fill="#C43C12" transform="rotate(8 298 126)"/>
+            <!-- uap -->
+            <path d="M120 118c-6-8 4-14-2-24" stroke="#FBF7EF" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/>
+            <path d="M140 112c-6-8 4-14-2-24" stroke="#FBF7EF" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"/>
+            <path d="M196 116c-6-8 4-14-2-24" stroke="#FBF7EF" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/>
+            <!-- bintang/langit -->
+            <circle cx="40" cy="36" r="2.5" fill="#FBF7EF" opacity=".7"/>
+            <circle cx="330" cy="28" r="2" fill="#FBF7EF" opacity=".55"/>
+            <circle cx="300" cy="58" r="1.6" fill="#FBF7EF" opacity=".4"/>
+            <circle cx="70" cy="70" r="1.8" fill="#FBF7EF" opacity=".45"/>
+            <!-- siluet gunung Ciremai -->
+            <path d="M0 92l52-38 38 26 44-20 50 30H0z" fill="#1D402C"/>
+            <path d="M200 90l60-34 46 22 42-14 32 26z" fill="#1D402C"/>
+          </svg>
+        </div>
       </div>
     </div>
   </header>
