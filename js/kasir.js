@@ -3,12 +3,13 @@
    Transaksi tunai · struk · riwayat · laporan · kelola menu
    ============================================================ */
 
-const pos = { cart: {} };
-const $ = (s) => document.querySelector(s);
-const $$ = (s) => document.querySelectorAll(s);
+const pos = { cart: {} },
+  $ = (s) => document.querySelector(s),
+  $$ = (s) => document.querySelectorAll(s),
+  namaById = (id) => (MENU.find((m) => m.id === id) || {}).nama || id,
+  hargaById = (id) => (MENU.find((m) => m.id === id) || {}).harga || 0;
 
-const namaById = (id) => (MENU.find((m) => m.id === id) || {}).nama || id;
-const hargaById = (id) => (MENU.find((m) => m.id === id) || {}).harga || 0;
+let daftarPesanan = [];
 
 // ---------- INIT ----------
 let __kasirInit = false;
@@ -40,6 +41,7 @@ function initKasirUI() {
     if (e.key === 'Escape') {
       $('#cartModal')?.classList.remove('open');
       $('#receiptModal')?.classList.remove('open');
+      $('#confirmModal')?.classList.remove('open');
       document.body.style.overflow = '';
     }
   });

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Isi data warung dari CONFIG
   $('#brandNama').textContent = CONFIG.namaWarung;
   $('#brandKota').textContent = CONFIG.kota;
-  $('#jamBuka').textContent = CONFIG.jamBuka.replace('Setiap hari · ', '');
+  $('#jamBuka').textContent = CONFIG.jamBuka.replace(/^Setiap hari\s*·\s*/, '');
   $('#gmapsLink').href = CONFIG.gmapsUrl;
   $('#footNama').textContent = CONFIG.namaWarung;
   $('#footAlamat').textContent = CONFIG.alamat;

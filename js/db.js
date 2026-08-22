@@ -1,5 +1,5 @@
 /* ============================================================
-   RM. CIREMAI KUNINGAN — DB Cloud (Supabase, opt-in)
+   RM. CIREMAI SEMARANG - DB Cloud (Supabase, opt-in)
    Koneksi via REST API Supabase (tanpa library eksternal).
    Aktif hanya jika CONFIG.supabase.enabled === true.
    ============================================================ */

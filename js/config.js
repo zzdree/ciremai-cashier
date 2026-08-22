@@ -1,17 +1,17 @@
 /* ============================================================
-   RM. CIREMAI KUNINGAN — Konfigurasi Global
+   RM. CIREMAI SEMARANG — Konfigurasi Global
    Edit file ini untuk mengubah info warung & nomor WA.
    ============================================================ */
 
 const CONFIG = {
   namaWarung: 'RM. Ciremai',
-  kota: 'Kuningan, Jawa Barat',
+  kota: 'Semarang, Jawa Tengah',
   tagline: 'Magelangan • Nasi Goreng • Mie Dokdok',
   // Ganti dengan nomor WhatsApp resmi warung (format internasional tanpa +)
   waNomor: '6281234567890',
-  jamBuka: 'Setiap hari · 16.00 – 02.00 WIB',
-  alamat: 'Jl. Raya Ciremai, Kuningan, Jawa Barat',
-  gmapsUrl: 'https://maps.app.goo.gl/fteodwrCPNJeU1GJ9',
+  jamBuka: 'Setiap hari · Buka 24 Jam',
+  alamat: 'Kampus UNNES, Sekaran, Gunungpati, Kota Semarang',
+  gmapsUrl: 'https://www.google.com/maps/search/?api=1&query=RM%20Ciremai%20UNNES%20Semarang',
   // Database cloud (opsional). Set enabled=true setelah isi url & key dari Supabase.
   // Gratis di https://supabase.com — lihat README untuk skema SQL-nya.
   supabase: {

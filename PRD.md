@@ -1,9 +1,9 @@
-# PRD — Aplikasi Pencatatan & Pemesanan RM. Ciremai Kuningan
+# PRD — Aplikasi Pencatatan & Pemesanan RM. Ciremai Semarang
 
 | | |
 |---|---|
 | **Produk** | Ciremai Cashier — web app pencatatan penjualan (POS) + pemesanan pelanggan |
-| **Lokasi bisnis** | [RM. Ciremai Kuningan](https://maps.app.goo.gl/fteodwrCPNJeU1GJ9) (-7.0466, 110.3948) |
+| **Lokasi bisnis** | [RM. Ciremai UNNES](https://www.google.com/maps/search/?api=1&query=RM%20Ciremai%20UNNES%20Semarang) — Kampus UNNES, Sekaran, Gunungpati, Kota Semarang |
 | **Folder proyek** | `C:\ANDREAS\ciremai-cashier` |
 | **Deployment target** | GitHub Pages (static hosting, gratis) |
 | **Versi dokumen** | 1.0 — 22 Agustus 2026 |
@@ -166,6 +166,6 @@ Transaction { id: string, ts: ISOString, items: {id,nama,harga,qty}[], subtotal,
 
 ## 10. Keputusan Terbuka
 
-- [ ] Nomor WhatsApp resmi warung (sementara placeholder).
-- [ ] Jam buka pasti (sementara asumsi 16.00–02.00 WIB).
-- [ ] Alamat lengkap untuk footer/halaman utama.
+- [x] Jam buka: **buka 24 jam**, setiap hari (konfirmasi pemilik).
+- [x] Alamat lengkap: **Kampus UNNES, Sekaran, Gunungpati, Kota Semarang** (konfirmasi pemilik).
+- [ ] Nomor WhatsApp resmi warung — tidak dipakai lagi (pesanan langsung masuk kasir).
