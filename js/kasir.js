@@ -91,8 +91,30 @@ function bindTabs() {
   });
 }
 
-// ---------- ANTrian PESANAN (dari pelanggan) ----------
-let daftarPesanan = [];
+// ---------- SOUND: notif order baru ----------
+let __knownOrderIds = new Set();
+function playDing() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    const now = ctx.currentTime;
+    [880, 1320].forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = f;
+      const t = now + i * 0.14;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.24);
+    });
+    setTimeout(() => ctx.close().catch(() => {}), 600);
+  } catch (_) {}
+}
 
 function renderPesanan() {
   const list = $('#pesananList');
@@ -103,6 +125,11 @@ function renderPesanan() {
     return;
   }
   DB.ambilOrderBaru().then((rows) => {
+    // Notifikasi suara HANYA kalau ada order BARU yang belum pernah tampil
+    const ids = rows.map((r) => String(r.id));
+    const fresh = ids.filter((id) => !__knownOrderIds.has(id));
+    if (fresh.length && __knownOrderIds.size > 0) playDing();
+    ids.forEach((id) => __knownOrderIds.add(id));
     daftarPesanan = rows;
     const badge = $('#pesananBadge');
     badge.textContent = rows.length;
