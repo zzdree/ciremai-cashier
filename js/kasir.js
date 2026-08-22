@@ -10,35 +10,11 @@ const $$ = (s) => document.querySelectorAll(s);
 const namaById = (id) => (MENU.find((m) => m.id === id) || {}).nama || id;
 const hargaById = (id) => (MENU.find((m) => m.id === id) || {}).harga || 0;
 
-// ---------- LOCK SCREEN ----------
-function initLock() {
-  const screen = $('#lockScreen');
-  const input = $('#pinInput');
-  const err = $('#lockErr');
-  if (!screen || !CONFIG.kasirPin) { screen && screen.classList.add('hidden'); return; }
-  const unlock = () => {
-    if (input.value.trim() === String(CONFIG.kasirPin)) {
-      screen.classList.add('hidden');
-      localStorage.setItem('ciremai_unlocked', '1');
-    } else {
-      err.hidden = false;
-      input.value = '';
-      input.focus();
-    }
-  };
-  // Ingat sesi yang sudah buka (biar gak ngetik ulang terus)
-  if (localStorage.getItem('ciremai_unlocked') === '1') screen.classList.add('hidden');
-  $('#btnUnlock').addEventListener('click', unlock);
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
-  input.focus();
-}
-
 // ---------- INIT ----------
-document.addEventListener('DOMContentLoaded', () => {
-  initLock();
-  // Jika terkunci, jangan inisialisasi UI kasir
-  if ($('#lockScreen') && !$('#lockScreen').classList.contains('hidden') && CONFIG.kasirPin) return;
-
+let __kasirInit = false;
+function initKasirUI() {
+  if (__kasirInit) return;
+  __kasirInit = true;
   $('#tbNama').textContent = CONFIG.namaWarung;
   renderPosGrid();
   renderMenuManage();
@@ -67,6 +43,34 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = '';
     }
   });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // ---------- LOCK SCREEN ----------
+  const screen = $('#lockScreen');
+  const input = $('#pinInput');
+  const err = $('#lockErr');
+  if (!screen || !CONFIG.kasirPin) { screen && screen.classList.add('hidden'); initKasirUI(); return; }
+  const unlock = () => {
+    if (input.value.trim() === String(CONFIG.kasirPin)) {
+      screen.classList.add('hidden');
+      localStorage.setItem('ciremai_unlocked', '1');
+      initKasirUI();
+    } else {
+      err.hidden = false;
+      input.value = '';
+      input.focus();
+    }
+  };
+  // Ingat sesi yang sudah buka (biar gak ngetik ulang terus)
+  if (localStorage.getItem('ciremai_unlocked') === '1') {
+    screen.classList.add('hidden');
+    initKasirUI();
+  } else {
+    $('#btnUnlock').addEventListener('click', unlock);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
+    input.focus();
+  }
 });
 
 // ---------- TABS ----------
