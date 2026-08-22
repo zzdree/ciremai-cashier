@@ -3,7 +3,7 @@
    Palet: krem gerobak · merah bara · hijau Ciremai · emas
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+/* Font dimuat via <link rel="preconnect"> + <link> di <head> (index.html & kasir.html) untuk render lebih cepat */
 
 :root {
   --cream: #FBF7EF;
@@ -46,6 +46,13 @@ body {
 
 button { font-family: inherit; cursor: pointer; border: none; background: none; }
 input, select, textarea { font-family: inherit; font-size: 1rem; }
+
+/* Aksesibilitas: fokus keyboard terlihat jelas, tanpa outline saat klik mouse */
+:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 
 img, svg { display: block; max-width: 100%; }
 
@@ -232,14 +239,14 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
   padding: 4px;
 }
 .qty-in-card button {
-  width: 26px; height: 26px; border-radius: 50%;
-  color: #fff; font-weight: 800; font-size: .95rem;
+  width: 30px; height: 30px; border-radius: 50%;
+  color: #fff; font-weight: 800; font-size: 1rem;
   display: grid; place-items: center;
 }
 .qty-in-card button:hover { background: var(--red-dark); }
 .qty-in-card span {
-  min-width: 24px; text-align: center;
-  color: #fff; font-weight: 800; font-size: .88rem;
+  min-width: 26px; text-align: center;
+  color: #fff; font-weight: 800; font-size: .9rem;
 }
 
 .empty-state {
@@ -329,12 +336,12 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
   background: var(--paper);
 }
 .stepper button {
-  width: 26px; height: 26px; border-radius: 50%;
+  width: 30px; height: 30px; border-radius: 50%;
   font-weight: 800; color: var(--red);
   display: grid; place-items: center;
 }
 .stepper button:hover { background: var(--red-soft); }
-.stepper span { min-width: 26px; text-align: center; font-weight: 700; font-size: .88rem; }
+.stepper span { min-width: 28px; text-align: center; font-weight: 700; font-size: .92rem; }
 
 .cart-summary {
   margin-top: 18px; padding-top: 16px;
@@ -657,5 +664,15 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
     position: fixed; left: 0; top: 0;
     box-shadow: none; border-radius: 0;
     width: 100%; max-width: 80mm;
+  }
+}
+
+/* Aksesibilitas: hormati preferensi reduce-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
   }
 }
