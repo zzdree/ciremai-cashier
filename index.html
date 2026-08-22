@@ -3,38 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RM. Ciremai Semarang — Menu & Pemesanan Online</title>
-  <meta name="description" content="Menu dan pemesanan online RM. Ciremai UNNES Semarang. Magelangan, Nasi Goreng, Mie Dokdok & minuman hangat. Buka 24 jam, pesanan langsung masuk ke kasir." />
+  <title>RM. Ciremai Semarang — Menu & Pemesanan Online Real-Time</title>
+  <meta name="description" content="Pesan Magelangan, Nasi Goreng, dan Mie Dokdok khas RM. Ciremai UNNES Sekaran Semarang. Buka 24 jam, pesan mandiri dari meja via QR, otomatis terhubung ke kasir." />
+  <meta name="theme-color" content="#27553B" />
+  <link rel="canonical" href="https://zzdree.github.io/ciremai-cashier/order" />
+
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="restaurant.restaurant" />
+  <meta property="og:url" content="https://zzdree.github.io/ciremai-cashier/order" />
+  <meta property="og:title" content="RM. Ciremai Semarang — Menu & Pemesanan Online Real-Time" />
+  <meta property="og:description" content="Magelangan, Nasi Goreng, Mie Dokdok hangat khas warung malam UNNES. Pesan mandiri dari meja, langsung masuk ke antrean kasir." />
+  <meta property="og:site_name" content="RM. Ciremai" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="RM. Ciremai Semarang — Menu & Pemesanan Online" />
+  <meta name="twitter:description" content="Pesan makanan dan minuman hangat khas RM. Ciremai UNNES Semarang 24 Jam." />
+
+  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E9A23B'/><text x='50' y='68' font-size='52' text-anchor='middle'>🍛</text></svg>" />
+
+  <!-- Performance & Fonts Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://lnxprlvmyhqxkzarrzac.supabase.co" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
   <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Schema.org JSON-LD Structured Data for Restaurant -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "RM. Ciremai",
+    "description": "Warung makan khas Indonesia 24 jam di kawasan UNNES Semarang dengan menu andalan Magelangan, Nasi Goreng, dan Mie Dokdok.",
+    "servesCuisine": "Indonesian",
+    "priceRange": "$",
+    "url": "https://zzdree.github.io/ciremai-cashier/order",
+    "telephone": "+6281234567890",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Jl. Kalimasada, Sekaran, Kec. Gunung Pati",
+      "addressLocality": "Kota Semarang",
+      "addressRegion": "Jawa Tengah",
+      "postalCode": "50229",
+      "addressCountry": "ID"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -7.0505,
+      "longitude": 110.3956
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+        ],
+        "opens": "00:00",
+        "closes": "23:59"
+      }
+    ],
+    "hasMenu": {
+      "@type": "Menu",
+      "name": "Menu RM. Ciremai",
+      "hasMenuItem": [
+        {
+          "@type": "MenuItem",
+          "name": "Magelangan Spesial",
+          "offers": { "@type": "Offer", "price": "15000", "priceCurrency": "IDR" }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Nasi Goreng Telur",
+          "offers": { "@type": "Offer", "price": "14000", "priceCurrency": "IDR" }
+        },
+        {
+          "@type": "MenuItem",
+          "name": "Mie Dokdok Kuah Kental",
+          "offers": { "@type": "Offer", "price": "13000", "priceCurrency": "IDR" }
+        }
+      ]
+    }
+  }
+  </script>
 </head>
 <body>
 
   <!-- ============ HERO ============ -->
-  <header class="hero">
+  <header class="hero" role="banner">
     <div class="container hero-inner">
       <div>
         <div class="brand-row" style="margin-bottom:28px;">
           <div class="brand-mark">
-            <div class="brand-badge">C</div>
+            <div class="brand-badge" aria-hidden="true">C</div>
             <div>
               <div class="brand-name" id="brandNama">RM. Ciremai</div>
               <div class="brand-sub" id="brandKota">Semarang, Jawa Tengah</div>
             </div>
           </div>
-          <a class="kasir-link" href="admin.html">⚙️ Admin</a>
+          <a class="kasir-link" href="admin.html" aria-label="Buka Dashboard Admin dan Kasir">⚙️ Admin</a>
         </div>
 
         <div class="hero-copy">
-          <div class="meja-badge" id="mejaBadge" hidden>🪑 Meja <span id="mejaNo"></span></div>
+          <div class="meja-badge" id="mejaBadge" hidden aria-live="polite">🪑 Meja <span id="mejaNo"></span></div>
           <h1>Laper tengah malam? Sini, kita masak.</h1>
           <p>Magelangan, nasi goreng, dan mie dokdok khas warung — dimasak dadakan saat kamu pesan.</p>
           <div class="hero-meta">
-            <span class="meta-pill">🕒 <span id="jamBuka">Buka 24 Jam</span></span>
-            <a class="meta-pill" href="#" id="gmapsLink" target="_blank" rel="noopener">📍 Lihat di Google Maps</a>
+            <span class="meta-pill" aria-label="Jam operasional">🕒 <span id="jamBuka">Buka 24 Jam</span></span>
+            <a class="meta-pill" href="#" id="gmapsLink" target="_blank" rel="noopener noreferrer" aria-label="Buka lokasi di Google Maps">📍 Lihat di Google Maps</a>
           </div>
         </div>
       </div>
@@ -75,41 +152,41 @@
     </div>
   </header>
 
-  <!-- ============ MENU ============ -->
-  <main class="menu-section container">
+  <!-- ============ MENU SECTION ============ -->
+  <main class="menu-section container" id="mainContent">
     <div class="search-wrap">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input type="search" id="searchInput" placeholder="Cari menu… misal: magelangan, es teh" autocomplete="off" />
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="searchInput" placeholder="Cari menu… misal: magelangan, es teh" autocomplete="off" aria-label="Cari menu makanan dan minuman" />
     </div>
 
-    <div class="chips" id="chips" role="tablist"></div>
+    <nav class="chips" id="chips" role="tablist" aria-label="Kategori menu"></nav>
 
-    <div id="menuList"><!-- dirender oleh js/app.js --></div>
+    <section id="menuList" aria-label="Daftar menu makanan dan minuman"><!-- dirender oleh js/app.js --></section>
   </main>
 
   <!-- ============ CART BAR ============ -->
-  <div class="cart-bar" id="cartBar">
+  <aside class="cart-bar" id="cartBar" aria-live="polite">
     <div class="container cart-bar-inner">
       <div class="cart-bar-info">
-        <strong id="cartBarTotal">Rp 0</strong><br />
+        <strong id="cartBarTotal">Rp 0</strong>
         <small id="cartBarCount">0 item dipilih</small>
       </div>
-      <button class="btn-cart-open" id="btnOpenCart">
+      <button class="btn-cart-open" id="btnOpenCart" aria-label="Lihat isi keranjang dan checkout">
         🛒 Lihat Keranjang
         <span class="cart-count" id="cartBadge">0</span>
       </button>
     </div>
-  </div>
+  </aside>
 
   <!-- ============ MODAL KERANJANG + CHECKOUT ============ -->
-  <div class="modal-overlay" id="cartModal">
+  <div class="modal-overlay" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartHeading">
     <div class="modal">
       <div class="modal-head">
-        <h2>Keranjangmu</h2>
-        <button class="modal-close" id="btnCloseCart" aria-label="Tutup">✕</button>
+        <h2 id="cartHeading">Keranjangmu</h2>
+        <button class="modal-close" id="btnCloseCart" aria-label="Tutup keranjang">✕</button>
       </div>
 
-      <div id="cartItems"><!-- isi keranjang --></div>
+      <div id="cartItems" aria-label="Rincian item pesanan"><!-- isi keranjang --></div>
 
       <div class="cart-summary">
         <div class="summary-row"><span>Subtotal</span><span id="sumSubtotal">Rp 0</span></div>
@@ -118,10 +195,10 @@
 
       <form id="checkoutForm">
         <div class="field">
-          <label>Mau Makan di Mana?</label>
-          <div class="order-type">
-            <button type="button" class="type-btn active" data-type="Makan di Tempat">🍽️ Makan di Tempat</button>
-            <button type="button" class="type-btn" data-type="Bungkus">🥡 Bungkus</button>
+          <label id="labelMakan">Mau Makan di Mana?</label>
+          <div class="order-type" role="radiogroup" aria-labelledby="labelMakan">
+            <button type="button" class="type-btn active" data-type="Makan di Tempat" role="radio" aria-checked="true">🍽️ Makan di Tempat</button>
+            <button type="button" class="type-btn" data-type="Bungkus" role="radio" aria-checked="false">🥡 Bungkus</button>
           </div>
         </div>
 
@@ -131,7 +208,7 @@
         </div>
 
         <button type="submit" class="btn-primary" id="btnWa">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.4 14.1c-.2.7-1.2 1.3-2 1.4-.5.1-1.2.2-3.4-.7-2.9-1.2-4.8-4.1-4.9-4.3-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.6-.4.8-.4h.6c.2 0 .4-.1.7.5.2.6.8 2 .9 2.2.1.2.1.4 0 .6-.3.6-.6.8-.4 1.2.7 1.2 1.6 2.1 2.8 2.7.3.2.5.1.7-.1l1-1.1c.2-.3.4-.2.7-.1l2.2 1c.3.2.5.3.6.4.1.2.1.8-.1 1.5z"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.4 14.1c-.2.7-1.2 1.3-2 1.4-.5.1-1.2.2-3.4-.7-2.9-1.2-4.8-4.1-4.9-4.3-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.6-.4.8-.4h.6c.2 0 .4-.1.7.5.2.6.8 2 .9 2.2.1.2.1.4 0 .6-.3.6-.6.8-.4 1.2.7 1.2 1.6 2.1 2.8 2.7.3.2.5.1.7-.1l1-1.1c.2-.3.4-.2.7-.1l2.2 1c.3.2.5.3.6.4.1.2.1.8-.1 1.5z"/></svg>
           Kirim Pesanan ke Kasir
         </button>
         <p class="wa-note">Pesanan otomatis masuk ke layar kasir.<br />Kasir akan mengonfirmasi, lalu kamu bayar tunai atau scan QRIS di warung.</p>
@@ -142,9 +219,9 @@
   </div>
 
   <!-- ============ MODAL PESANAN TERKIRIM ============ -->
-  <div class="modal-overlay" id="successModal">
+  <div class="modal-overlay" id="successModal" role="dialog" aria-modal="true" aria-labelledby="successTitle">
     <div class="modal modal-success">
-      <div class="success-emoji">✅</div>
+      <div class="success-emoji" aria-hidden="true">✅</div>
       <h2 id="successTitle">Pesanan Terkirim!</h2>
       <p id="successBody" class="success-body">Pesanan sudah masuk ke layar kasir.</p>
       <div class="success-actions">
@@ -156,16 +233,16 @@
   </div>
 
   <!-- ============ FOOTER ============ -->
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <div class="container">
       <strong id="footNama">RM. Ciremai</strong> · <span id="footAlamat">X93V+8WX, Jl. Kalimasada, Sekaran, Kec. Gn. Pati, Kota Semarang, Jawa Tengah 50229</span><br />
       <span id="footJam">Setiap hari · Buka 24 Jam</span><br /><br />
       Dibuat dengan 🔥 untuk pecinta kuliner malam ·
-      <a href="https://github.com/zzdree" target="_blank" rel="noopener">@zzdree</a>
+      <a href="https://github.com/zzdree" target="_blank" rel="noopener noreferrer">@zzdree</a>
     </div>
   </footer>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="js/config.js"></script>
   <script src="js/data.js"></script>

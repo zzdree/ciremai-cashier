@@ -159,8 +159,15 @@ async function renderPesanan() {
 
     daftarPesanan = rows;
     const badge = $('#pesananBadge');
-    badge.textContent = rows.length;
-    badge.hidden = rows.length === 0;
+    if (badge) {
+      badge.textContent = rows.length;
+      badge.hidden = rows.length === 0;
+      if (rows.length > 0) {
+        badge.classList.remove('pulse');
+        void badge.offsetWidth; // trigger reflow
+        badge.classList.add('pulse');
+      }
+    }
 
     if (!rows.length) {
       list.innerHTML = `<div class="cart-empty"><div class="big">📭</div>Belum ada pesanan dari pelanggan.</div>`;

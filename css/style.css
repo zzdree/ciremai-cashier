@@ -329,6 +329,15 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
   background: var(--ink); color: var(--cream);
   border-radius: 999px; min-width: 24px; height: 24px;
   display: grid; place-items: center; font-size: .8rem; font-weight: 800;
+  transition: transform .2s ease, background .2s ease;
+}
+@keyframes badgePop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.3); background: var(--red); color: #fff; }
+  100% { transform: scale(1); }
+}
+.cart-count.pulse, .tab-badge.pulse {
+  animation: badgePop .32s cubic-bezier(.175, .885, .32, 1.275);
 }
 
 /* ============ MODAL (keranjang & checkout) ============ */

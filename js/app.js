@@ -281,7 +281,13 @@ function updateCartBar() {
   bar.classList.toggle('show', n > 0 && !$('#cartModal').classList.contains('open'));
   $('#cartBarTotal').textContent = Store.rupiah(cartTotal());
   $('#cartBarCount').textContent = `${n} item dipilih`;
-  $('#cartBadge').textContent = n;
+  const badge = $('#cartBadge');
+  if (badge) {
+    badge.textContent = n;
+    badge.classList.remove('pulse');
+    void badge.offsetWidth; // trigger reflow
+    if (n > 0) badge.classList.add('pulse');
+  }
 }
 
 function refreshAll() {

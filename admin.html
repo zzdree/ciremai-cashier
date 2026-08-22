@@ -6,66 +6,68 @@
   <title>Admin & Kasir — RM. Ciremai Semarang</title>
   <meta name="description" content="Dashboard Admin & Kasir (POS) RM. Ciremai UNNES Semarang: transaksi kasir, antrean pesanan real-time, cetak QR meja, dan laporan harian." />
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#27553B" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23C43C12'/><text x='50' y='68' font-size='52' text-anchor='middle'>🧾</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://lnxprlvmyhqxkzarrzac.supabase.co" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body class="pos-body">
 
   <!-- ============ LOCK SCREEN ============ -->
-  <div id="lockScreen" class="lock-screen">
+  <section id="lockScreen" class="lock-screen" role="dialog" aria-modal="true" aria-labelledby="lockHeading">
     <div class="lock-card">
-      <div class="lock-emoji">🔒</div>
-      <h2>Akses Admin & Kasir</h2>
+      <div class="lock-emoji" aria-hidden="true">🔒</div>
+      <h2 id="lockHeading">Akses Admin & Kasir</h2>
       <p>Masukkan PIN untuk membuka dashboard admin & kasir.</p>
-      <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off" />
+      <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off" aria-label="PIN Kasir" />
       <button class="btn-primary" id="btnUnlock">Buka Dashboard</button>
-      <p class="lock-err" id="lockErr" hidden>❌ PIN salah. Coba lagi.</p>
+      <p class="lock-err" id="lockErr" hidden role="alert">❌ PIN salah. Coba lagi.</p>
     </div>
-  </div>
+  </section>
 
   <!-- ============ TOPBAR ============ -->
-  <header class="topbar">
+  <header class="topbar" role="banner">
     <div class="topbar-inner container" style="max-width:1280px;">
       <div class="topbar-brand">
-        <div class="brand-badge">C</div>
+        <div class="brand-badge" aria-hidden="true">C</div>
         <span>Admin · <span id="tbNama">RM. Ciremai</span></span>
       </div>
-      <nav class="topbar-actions">
-        <button class="tab-btn active" data-view="kasir">🛒 Kasir (POS)</button>
-        <button class="tab-btn" data-view="pesanan">📥 Pesanan Masuk <span class="tab-badge" id="pesananBadge" hidden>0</span></button>
-        <button class="tab-btn" data-view="riwayat">📜 Laporan & Riwayat</button>
-        <button class="tab-btn" data-view="menu">📋 Kelola Menu</button>
-        <button class="tab-btn" data-view="qr">🔳 Cetak QR Meja</button>
-        <a class="tab-btn" href="order/" style="text-decoration:none;">📱 Mode Pelanggan</a>
-        <button class="tab-btn" id="btnMute" title="Suara notif order baru" aria-label="Toggle suara notif">🔊</button>
+      <nav class="topbar-actions" role="tablist" aria-label="Navigasi Menu Admin">
+        <button class="tab-btn active" data-view="kasir" role="tab" aria-selected="true" aria-controls="view-kasir-wrap">🛒 Kasir (POS)</button>
+        <button class="tab-btn" data-view="pesanan" role="tab" aria-selected="false" aria-controls="view-pesanan">📥 Pesanan Masuk <span class="tab-badge" id="pesananBadge" hidden aria-live="polite">0</span></button>
+        <button class="tab-btn" data-view="riwayat" role="tab" aria-selected="false" aria-controls="view-riwayat">📜 Laporan & Riwayat</button>
+        <button class="tab-btn" data-view="menu" role="tab" aria-selected="false" aria-controls="view-menu">📋 Kelola Menu</button>
+        <button class="tab-btn" data-view="qr" role="tab" aria-selected="false" aria-controls="view-qr">🔳 Cetak QR Meja</button>
+        <a class="tab-btn" href="order/" style="text-decoration:none;" aria-label="Buka Mode Pelanggan">📱 Mode Pelanggan</a>
+        <button class="tab-btn" id="btnMute" title="Suara notif order baru" aria-label="Toggle suara notifikasi pesanan baru">🔊</button>
       </nav>
     </div>
   </header>
 
   <!-- ============ VIEW: TRANSAKSI (POS) ============ -->
-  <main class="pos-layout with-cart" id="view-kasir-wrap">
+  <main class="pos-layout with-cart" id="view-kasir-wrap" role="tabpanel" aria-label="Layar Kasir POS">
 
     <section class="view active" id="view-kasir">
       <div class="panel panel-pad" style="margin-bottom:16px;">
         <input type="search" id="posSearch" placeholder="🔍 Cari menu untuk ditambahkan…" autocomplete="off"
-               style="width:100%;padding:12px 16px;border-radius:999px;border:1.5px solid var(--line);outline:none;" />
+               style="width:100%;padding:12px 16px;border-radius:999px;border:1.5px solid var(--line);outline:none;" aria-label="Cari menu di kasir" />
       </div>
-      <div class="grid" id="posGrid"><!-- kartu menu POS --></div>
+      <div class="grid" id="posGrid" aria-label="Daftar menu kasir"><!-- kartu menu POS --></div>
     </section>
 
-    <aside class="cart-panel">
+    <aside class="cart-panel" aria-label="Keranjang dan Pembayaran Kasir">
       <div class="panel panel-pad">
         <div class="pos-cart-head">
           <h2>🛒 Struk Kasir</h2>
-          <button class="btn-clear" id="btnClearPos" title="Bersihkan struk">Bersihkan</button>
+          <button class="btn-clear" id="btnClearPos" title="Bersihkan struk" aria-label="Bersihkan struk transaksi">Bersihkan</button>
         </div>
 
-        <div id="orderContext" class="order-context" hidden></div>
+        <div id="orderContext" class="order-context" hidden aria-live="polite"></div>
 
-        <div class="pos-cart-list" id="posCartList"></div>
+        <div class="pos-cart-list" id="posCartList" aria-label="Daftar item di kasir"></div>
 
         <div class="pos-calc">
           <div class="pos-row">
@@ -75,7 +77,7 @@
 
           <div class="pos-row">
             <span>Diskon (Rp)</span>
-            <input type="number" id="posDiskon" min="0" step="500" placeholder="0" class="input-inline" />
+            <input type="number" id="posDiskon" min="0" step="500" placeholder="0" class="input-inline" aria-label="Nominal diskon rupiah" />
           </div>
 
           <div class="pos-row total-row">
@@ -85,8 +87,8 @@
 
           <!-- Pembayaran -->
           <div class="pay-section">
-            <label class="pay-label">Metode Pembayaran</label>
-            <div class="metode-group">
+            <label class="pay-label" id="labelMetodeBayar">Metode Pembayaran</label>
+            <div class="metode-group" role="radiogroup" aria-labelledby="labelMetodeBayar">
               <label class="metode-opt">
                 <input type="radio" name="metode" value="cash" checked />
                 <span>💵 Tunai (Cash)</span>
@@ -97,10 +99,10 @@
               </label>
             </div>
 
-            <label class="pay-label" style="margin-top:10px;">Uang Diterima</label>
+            <label class="pay-label" for="posBayar" style="margin-top:10px;">Uang Diterima</label>
             <input type="number" id="posBayar" min="0" step="1000" placeholder="Nominal uang diterima…" class="input-block" />
 
-            <div class="quick-money" id="quickMoney">
+            <div class="quick-money" id="quickMoney" aria-label="Pilihan cepat nominal uang">
               <button type="button" class="money-btn" data-money="pas">Pas</button>
               <button type="button" class="money-btn" data-money="10000">10rb</button>
               <button type="button" class="money-btn" data-money="20000">20rb</button>
@@ -108,7 +110,7 @@
               <button type="button" class="money-btn" data-money="100000">100rb</button>
             </div>
 
-            <div class="pos-row change-row" id="changeLine" hidden>
+            <div class="pos-row change-row" id="changeLine" hidden aria-live="polite">
               <span>Kembalian</span>
               <span id="posKembalian" class="num-big green">Rp 0</span>
             </div>
@@ -120,7 +122,7 @@
             </label>
           </div>
 
-          <button class="btn-primary btn-checkout" id="btnBayar" disabled>
+          <button class="btn-primary btn-checkout" id="btnBayar" disabled aria-label="Simpan transaksi dan cetak struk">
             💰 Simpan & Cetak Struk
           </button>
         </div>
@@ -130,7 +132,7 @@
   </main>
 
   <!-- ============ VIEW: RIWAYAT ============ -->
-  <section class="view" id="view-riwayat" style="max-width:1080px;margin:0 auto;padding:20px;">
+  <section class="view" id="view-riwayat" role="tabpanel" aria-label="Laporan dan Riwayat Transaksi" style="max-width:1080px;margin:0 auto;padding:20px;">
     <div class="stat-grid" id="statGrid"></div>
 
     <div class="panel panel-pad" style="margin-top:20px;">
@@ -148,7 +150,7 @@
   </section>
 
   <!-- ============ VIEW: MENU (KELOLA STOK) ============ -->
-  <section class="view" id="view-menu" style="max-width:880px;margin:0 auto;padding:20px;">
+  <section class="view" id="view-menu" role="tabpanel" aria-label="Kelola Ketersediaan Stok Menu" style="max-width:880px;margin:0 auto;padding:20px;">
     <div class="panel panel-pad">
       <h2 style="font-size:1.15rem;">📋 Status Stok Menu</h2>
       <p style="font-size:.85rem;color:var(--ink-soft);margin-top:4px;">
@@ -159,7 +161,7 @@
   </section>
 
   <!-- ============ VIEW: QR MEJA ============ -->
-  <section class="view" id="view-qr" style="max-width:960px;margin:0 auto;padding:20px;">
+  <section class="view" id="view-qr" role="tabpanel" aria-label="Generator dan Cetak QR Code Meja" style="max-width:960px;margin:0 auto;padding:20px;">
     <div class="panel">
       <div class="panel-pad" style="border-bottom:1.5px solid var(--line);">
         <h2 style="font-size:1.15rem;">🔳 Cetak QR Code Meja</h2>
@@ -173,7 +175,7 @@
   </section>
 
   <!-- ============ VIEW: PESANAN (ANTRIAN) ============ -->
-  <section class="view" id="view-pesanan" style="max-width:1080px;margin:0 auto;padding:20px;">
+  <section class="view" id="view-pesanan" role="tabpanel" aria-label="Antrean Pesanan Masuk Real-Time" style="max-width:1080px;margin:0 auto;padding:20px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
       <h2 style="font-size:1.2rem;">📥 Pesanan Masuk dari Pelanggan</h2>
       <button class="chip" id="btnRefreshPesanan" style="margin:0;">🔄 Segarkan</button>
@@ -182,11 +184,11 @@
   </section>
 
   <!-- ============ MODAL KONFIRMASI BAYAR ============ -->
-  <div class="modal-overlay" id="confirmModal">
+  <div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmHeading">
     <div class="modal" style="max-width:420px;">
       <div class="modal-head">
-        <h2>✋ Pastikan Pesanan Benar</h2>
-        <button class="modal-close" id="btnCloseConfirm" aria-label="Tutup">✕</button>
+        <h2 id="confirmHeading">✋ Pastikan Pesanan Benar</h2>
+        <button class="modal-close" id="btnCloseConfirm" aria-label="Tutup konfirmasi">✕</button>
       </div>
       <div id="confirmBody" style="text-align:left;margin:10px 0 18px;"></div>
       <div style="display:flex;gap:10px;">
@@ -197,11 +199,11 @@
   </div>
 
   <!-- ============ MODAL STRUK ============ -->
-  <div class="modal-overlay" id="receiptModal">
+  <div class="modal-overlay" id="receiptModal" role="dialog" aria-modal="true" aria-labelledby="receiptHeading">
     <div class="modal" style="max-width:420px;text-align:center;">
       <div class="modal-head">
-        <h2>✅ Transaksi Berhasil</h2>
-        <button class="modal-close" id="btnCloseReceipt" aria-label="Tutup">✕</button>
+        <h2 id="receiptHeading">✅ Transaksi Berhasil</h2>
+        <button class="modal-close" id="btnCloseReceipt" aria-label="Tutup struk">✕</button>
       </div>
       <p style="color:var(--green);font-weight:800;margin-bottom:14px;" id="kembalianMsg"></p>
       <div class="receipt-wrap"><div class="receipt" id="receiptPaper"></div></div>
@@ -210,7 +212,7 @@
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="js/config.js"></script>
   <script src="js/data.js"></script>
