@@ -536,6 +536,16 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
 }
 .tab-btn:hover { background: rgba(251,247,239,.22); }
 .tab-btn.active { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.tab-btn.btn-logout {
+  background: rgba(220, 38, 38, 0.22);
+  border-color: rgba(239, 68, 68, 0.45);
+  color: #FFF;
+  margin-left: auto;
+}
+.tab-btn.btn-logout:hover {
+  background: rgba(220, 38, 38, 0.45);
+  border-color: rgba(239, 68, 68, 0.7);
+}
 
 .pos-layout {
   display: grid; grid-template-columns: 1fr;
@@ -952,74 +962,6 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
 }
 .best-list .qty { margin-left: auto; font-weight: 700; color: var(--ink-soft); font-size: .8rem; }
 
-/* Toggle habis */
-.menu-manage-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px;
-  border-bottom: 1.5px dashed var(--line);
-}
-.menu-manage-row:last-child { border-bottom: none; }
-.mm-name { flex: 1; font-weight: 600; font-size: .9rem; }
-.mm-price { font-size: .8rem; color: var(--ink-soft); }
-
-.toggle {
-  position: relative; width: 46px; height: 26px; flex-shrink: 0;
-  border-radius: 999px;
-  background: var(--green);
-  transition: background .2s ease;
-  border: none;
-  font-size: 0; color: transparent; overflow: hidden;
-}
-.toggle::after {
-  content: '';
-  position: absolute; top: 3px; left: 3px;
-  width: 20px; height: 20px; border-radius: 50%;
-  background: #fff;
-  transition: transform .2s cubic-bezier(.2,.8,.2,1);
-  box-shadow: 0 1px 3px rgba(0,0,0,.25);
-}
-.toggle.habis { background: #B9AC99; }
-.toggle.habis::after { transform: translateX(20px); }
-
-/* ============ QR CODE MEJA ============ */
-.qr-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-  padding: 18px;
-}
-.qr-card {
-  text-align: center;
-  padding: 16px 12px;
-  border: 1.5px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--paper);
-  box-shadow: var(--shadow-sm);
-  transition: transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s ease;
-}
-.qr-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
-}
-.qr-card img {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 10px;
-  border-radius: 8px;
-}
-.qr-card .qr-no {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--ink);
-}
-.qr-card .qr-url {
-  font-size: .68rem;
-  color: var(--ink-soft);
-  word-break: break-all;
-  margin-top: 4px;
-}
-
 /* ============ STRUK (thermal receipt) ============ */
 .receipt-wrap {
   display: flex; justify-content: center;
@@ -1251,65 +1193,125 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
   color: #9a3412;
   margin-bottom: 10px;
 }
-}
 
-/* Print: Struk PDF & QR Code Meja */
+/* ============ PRINT STYLESHEET (FULL A4 - 1 HALAMAN) ============ */
 @media print {
-  @page { margin: 8mm; }
-  body { background: #fff !important; color: #000 !important; }
-  .topbar, .tab-btn, .toast, .lock-screen, #btnPrintQr, #btnPrintReceipt, #btnDoneReceipt, #btnCloseReceipt, #btnCloseConfirm, #btnCancelConfirm, #btnProceedPay, #btnClearPos, .modal-close {
-    display: none !important;
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+    text-shadow: none !important;
+  }
+  html, body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    font-size: 11pt !important;
   }
 
-  /* Jika modal struk sedang terbuka -> cetak struk saja */
-  body:has(#receiptModal.open) .pos-layout,
-  body:has(#receiptModal.open) .view,
-  body:has(#receiptModal.open) #confirmModal {
+  /* Sembunyikan semua elemen navigasi, panel antarmuka, tombol, dan lock screen */
+  .topbar,
+  .pos-layout,
+  .view,
+  .tab-btn,
+  .toast,
+  .lock-screen,
+  .modal-head,
+  .modal-close,
+  .modal-close2,
+  #btnPrintReceipt,
+  #btnDoneReceipt,
+  #btnCsv,
+  #confirmModal,
+  #kembalianMsg,
+  .cart-bar,
+  .hero,
+  .footer {
     display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
-  body:has(#receiptModal.open) #receiptModal {
+
+  /* Modal struk diposisikan statis & mengisi halaman dengan proporsional */
+  #receiptModal {
     position: static !important;
     display: block !important;
     background: transparent !important;
     padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
   }
-  body:has(#receiptModal.open) #receiptModal .modal {
+  #receiptModal .modal {
     box-shadow: none !important;
     border: none !important;
     padding: 0 !important;
+    margin: 0 auto !important;
     max-width: 100% !important;
+    width: 100% !important;
+    background: transparent !important;
   }
-  body:has(#receiptModal.open) #receiptModal .modal-head,
-  body:has(#receiptModal.open) #kembalianMsg {
-    display: none !important;
-  }
-
-  /* Jika tab QR meja aktif -> cetak lembar QR meja */
-  body:has(#view-qr.active) .pos-layout,
-  body:has(#view-qr.active) #receiptModal,
-  body:has(#view-qr.active) #confirmModal {
-    display: none !important;
-  }
-  body:has(#view-qr.active) #view-qr {
-    display: block !important;
+  .receipt-wrap {
     padding: 0 !important;
-    max-width: 100% !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
   }
-  body:has(#view-qr.active) #view-qr .panel {
-    border: none !important;
+  .receipt {
+    width: 100% !important;
+    max-width: 620px !important;
+    margin: 0 auto !important;
+    padding: 30px 36px !important;
+    border: 2px solid #000000 !important;
+    border-radius: 12px !important;
     box-shadow: none !important;
-    padding: 0 !important;
-  }
-  .qr-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 16px !important;
-  }
-  .qr-card {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    border: 1.5px solid #000 !important;
-    box-shadow: none !important;
+    font-family: ui-monospace, 'Consolas', 'Courier New', monospace !important;
+    font-size: 11pt !important;
+    line-height: 1.6 !important;
+    color: #000000 !important;
+    background: #FFFFFF !important;
+  }
+  .receipt::before,
+  .receipt::after {
+    display: none !important;
+  }
+  .r-center {
+    text-align: center !important;
+  }
+  .r-bold {
+    font-weight: 800 !important;
+  }
+  .r-line {
+    border-top: 1.5px dashed #000000 !important;
+    margin: 12px 0 !important;
+  }
+  .r-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+    font-size: 11pt !important;
+    padding: 2px 0 !important;
+  }
+  .r-row span:first-child {
+    font-weight: 600 !important;
+  }
+  .r-small {
+    font-size: 9.5pt !important;
+    color: #222222 !important;
   }
 }
 

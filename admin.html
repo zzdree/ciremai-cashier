@@ -39,10 +39,9 @@
         <button class="tab-btn active" data-view="kasir" role="tab" aria-selected="true" aria-controls="view-kasir-wrap">🛒 Kasir (POS)</button>
         <button class="tab-btn" data-view="pesanan" role="tab" aria-selected="false" aria-controls="view-pesanan">📥 Pesanan Masuk <span class="tab-badge" id="pesananBadge" hidden aria-live="polite">0</span></button>
         <button class="tab-btn" data-view="riwayat" role="tab" aria-selected="false" aria-controls="view-riwayat">📜 Laporan & Riwayat</button>
-        <button class="tab-btn" data-view="menu" role="tab" aria-selected="false" aria-controls="view-menu">📋 Kelola Menu</button>
-        <button class="tab-btn" data-view="qr" role="tab" aria-selected="false" aria-controls="view-qr">🔳 Cetak QR Meja</button>
         <a class="tab-btn" href="order/" style="text-decoration:none;" aria-label="Buka Mode Pelanggan">📱 Mode Pelanggan</a>
         <button class="tab-btn" id="btnMute" title="Suara notif order baru" aria-label="Toggle suara notifikasi pesanan baru">🔊</button>
+        <button class="tab-btn btn-logout" id="btnLogout" title="Keluar / Kunci Kasir" aria-label="Keluar dari mode admin">🔒 Logout</button>
       </nav>
     </div>
   </header>
@@ -167,31 +166,6 @@
     <div class="panel panel-pad" style="margin-top:20px;">
       <h2 style="font-size:1.15rem;margin-bottom:12px;">🔥 Menu Paling Laris Hari Ini</h2>
       <ul class="best-list" id="bestList"></ul>
-    </div>
-  </section>
-
-  <!-- ============ VIEW: MENU (KELOLA STOK) ============ -->
-  <section class="view" id="view-menu" role="tabpanel" aria-label="Kelola Ketersediaan Stok Menu" style="max-width:880px;margin:0 auto;padding:20px;">
-    <div class="panel panel-pad">
-      <h2 style="font-size:1.15rem;">📋 Status Stok Menu</h2>
-      <p style="font-size:.85rem;color:var(--ink-soft);margin-top:4px;">
-        Klik untuk menandai menu <b>Habis</b>. Menu yang habis otomatis tidak bisa dipesan pelanggan di katalog.
-      </p>
-      <div class="menu-manage-list" id="menuManageList" style="margin-top:16px;"></div>
-    </div>
-  </section>
-
-  <!-- ============ VIEW: QR MEJA ============ -->
-  <section class="view" id="view-qr" role="tabpanel" aria-label="Generator dan Cetak QR Code Meja" style="max-width:960px;margin:0 auto;padding:20px;">
-    <div class="panel">
-      <div class="panel-pad" style="border-bottom:1.5px solid var(--line);">
-        <h2 style="font-size:1.15rem;">🔳 Cetak QR Code Meja</h2>
-        <p style="font-size:.84rem;color:var(--ink-soft);margin-top:4px;">
-          Tempel di tiap meja. Pelanggan scan → langsung buka menu & nomor meja otomatis terisi saat pesan.
-        </p>
-        <button class="btn-secondary" id="btnPrintQr" style="margin-top:12px;width:auto;padding:10px 18px;">🖨️ Cetak Semua QR</button>
-      </div>
-      <div class="qr-grid" id="qrGrid"></div>
     </div>
   </section>
 

@@ -18,14 +18,13 @@ function initKasirUI() {
   __kasirInit = true;
   $('#tbNama').textContent = CONFIG.namaWarung;
   renderPosGrid();
-  renderMenuManage();
   bindTabs();
   bindPos();
   updatePosUI();
   bindReceiptModal();
-  $('#btnPrintQr')?.addEventListener('click', () => window.print());
   bindPesanan();
   bindConfirm();
+  bindLogout();
   $('#btnPrintReceipt').addEventListener('click', () => window.print());
   // Muat antrian pesanan saat buka
   renderPesanan();
@@ -47,12 +46,29 @@ function initKasirUI() {
   });
 }
 
+function bindLogout() {
+  $('#btnLogout')?.addEventListener('click', () => {
+    if (!confirm('Keluar dari mode admin / kasir?')) return;
+    localStorage.removeItem('ciremai_unlocked');
+    const screen = $('#lockScreen');
+    const input = $('#pinInput');
+    const err = $('#lockErr');
+    if (screen) {
+      screen.classList.remove('hidden');
+      if (input) { input.value = ''; input.focus(); }
+      if (err) err.hidden = true;
+    }
+    toast('Berhasil keluar 🔒');
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // ---------- LOCK SCREEN ----------
   const screen = $('#lockScreen');
   const input = $('#pinInput');
   const err = $('#lockErr');
   if (!screen || !CONFIG.kasirPin) { screen && screen.classList.add('hidden'); initKasirUI(); return; }
+
   const unlock = () => {
     if (input.value.trim() === String(CONFIG.kasirPin)) {
       screen.classList.add('hidden');
@@ -64,13 +80,15 @@ document.addEventListener('DOMContentLoaded', () => {
       input.focus();
     }
   };
+
+  $('#btnUnlock')?.addEventListener('click', unlock);
+  input?.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
+
   // Ingat sesi yang sudah buka (biar gak ngetik ulang terus)
   if (localStorage.getItem('ciremai_unlocked') === '1') {
     screen.classList.add('hidden');
     initKasirUI();
   } else {
-    $('#btnUnlock').addEventListener('click', unlock);
-    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
     input.focus();
   }
 });
@@ -82,10 +100,8 @@ function bindTabs() {
     $$('.tab-btn[data-view]').forEach((b) => b.classList.toggle('active', b.dataset.view === view));
     main.style.display = (view === 'kasir') ? '' : 'none';
     $$('.view').forEach((v) => v.classList.remove('active'));
-    $('#view-' + view).classList.add('active');
+    $('#view-' + view)?.classList.add('active');
     if (view === 'riwayat') renderRiwayat();
-    if (view === 'menu') renderMenuManage();
-    if (view === 'qr') renderQr();
     if (view === 'pesanan') renderPesanan();
   };
   $$('.tab-btn[data-view]').forEach((btn) => {
@@ -254,28 +270,6 @@ function takeOrder(id) {
   renderPosCart();
   updatePosUI();
   toast('Pesanan diambil ✅');
-}
-
-
-
-// ---------- QR MEJA ----------
-function renderQr() {
-  const grid = $('#qrGrid');
-  if (!grid || grid.dataset.rendered) return;
-  const n = CONFIG.jumlahMeja || 10;
-  let html = '';
-  for (let i = 1; i <= n; i++) {
-    const url = CONFIG.mejaUrl(i);
-    const qr = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=${encodeURIComponent(url)}`;
-    html += `
-      <div class="qr-card">
-        <img src="${qr}" alt="QR Meja ${i}" loading="lazy" width="120" height="120" />
-        <div class="qr-no">Meja ${i}</div>
-        <div class="qr-url">${url}</div>
-      </div>`;
-  }
-  grid.innerHTML = html;
-  grid.dataset.rendered = '1';
 }
 
 // ---------- GRID MENU KASIR ----------
@@ -498,7 +492,6 @@ async function doBayar() {
   openReceipt();
 
   resetPos();
-  renderMenuManage();
   renderPesanan();
 }
 
@@ -657,28 +650,6 @@ function exportCSV() {
   a.click();
   URL.revokeObjectURL(url);
   toast('CSV terdownload ⬇️');
-}
-
-// ---------- KELOLA MENU (habis) ----------
-function renderMenuManage() {
-  const habis = Store.getHabis();
-  $('#menuManageList').innerHTML = MENU.map((m) => {
-    const sold = habis.includes(m.id);
-    return `
-      <div class="menu-manage-row">
-        <div class="card-emoji" style="width:40px;height:40px;font-size:1.2rem;border-radius:11px;">${m.emoji}</div>
-        <div class="mm-name">${m.nama}</div>
-        <div class="mm-price">${Store.rupiah(m.harga)}</div>
-        <button class="toggle ${sold ? 'habis' : ''}" data-id="${m.id}" aria-label="Toggle ${m.nama}">${sold ? 'Habis' : 'Ada'}</button>
-      </div>`;
-  }).join('');
-  $('#menuManageList').querySelectorAll('.toggle').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      Store.toggleHabis(btn.dataset.id);
-      renderMenuManage();
-      renderPosGrid();
-    });
-  });
 }
 
 // ---------- TOAST ----------
