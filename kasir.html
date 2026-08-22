@@ -14,6 +14,18 @@
 </head>
 <body class="pos-body">
 
+  <!-- ============ LOCK SCREEN ============ -->
+  <div id="lockScreen" class="lock-screen">
+    <div class="lock-card">
+      <div class="lock-emoji">🔒</div>
+      <h2>Akses Kasir</h2>
+      <p>Masukkan PIN untuk membuka halaman kasir.</p>
+      <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off" />
+      <button class="btn-primary" id="btnUnlock">Buka Kasir</button>
+      <p class="lock-err" id="lockErr" hidden>❌ PIN salah. Coba lagi.</p>
+    </div>
+  </div>
+
   <!-- ============ TOPBAR ============ -->
   <header class="topbar">
     <div class="topbar-inner container" style="max-width:1280px;">

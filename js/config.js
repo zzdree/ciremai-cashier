@@ -20,6 +20,8 @@ const CONFIG = {
     key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxueHBybHZteWhxeGt6YXJyemFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MDAwMDIsImV4cCI6MjEwMjk3NjAwMn0.fb4njNTFQZMcZPuvHE96i8zfX7CXCTGVN10A6wYDZUs',
   },
   // Jumlah meja untuk fitur QR code (kasir → pelanggan scan di meja)
+  // Pin halaman kasir (pelindung tambahan, di samping link terpisah)
+  kasirPin: '9900',
   jumlahMeja: 10,
 };
 

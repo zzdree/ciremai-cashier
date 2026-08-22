@@ -66,6 +66,24 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('#checkoutForm').addEventListener('submit', submitOrder);
+
+  // Modal pesanan terkirim — opsi nambah lagi atau selesai
+  const closeSuccess = () => {
+    $('#successModal').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  $('#btnAddMore').addEventListener('click', () => {
+    closeSuccess();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  $('#btnDone').addEventListener('click', () => {
+    closeSuccess();
+    toast('Terima kasih! Sampai jumpa 👋');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  $('#successModal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeSuccess();
+  });
 });
 
 // ---------- RENDER: CHIPS ----------
@@ -321,7 +339,15 @@ async function submitOrder(e) {
 
   toast(`Pesanan #${no} masuk ke kasir ✅`);
   state.cart = {};
-  setTimeout(() => { closeCart(); refreshAll(); }, 600);
+  setTimeout(() => {
+    closeCart();
+    refreshAll();
+    // Tampilkan layar terkirim + opsi nambah lagi
+    $('#successTitle').textContent = `Pesanan #${no} Terkirim!`;
+    $('#successBody').textContent = 'Sudah masuk ke layar kasir. Anak-anak mau nambah pesanan lagi?';
+    $('#successModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }, 600);
 }
 
 // ---------- TOAST ----------

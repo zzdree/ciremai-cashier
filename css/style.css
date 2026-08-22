@@ -819,3 +819,38 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
   .modal { box-shadow: none; max-width: 100% !important; }
   #receiptModal .btn-primary, #receiptModal .btn-secondary { display: none !important; }
 }
+
+/* ---- Lock screen kasir ---- */
+.lock-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #2a1410 0%, #c43c12 100%);
+  padding: 20px;
+}
+.lock-screen.hidden { display: none; }
+.lock-card {
+  background: var(--surface, #fff);
+  border-radius: 20px;
+  padding: 32px 28px;
+  width: 100%; max-width: 340px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0,0,0,.35);
+}
+.lock-emoji { font-size: 48px; line-height: 1; margin-bottom: 8px; }
+.lock-card h2 { font-family: 'Fraunces', serif; margin: 0 0 6px; color: var(--red, #c43c12); }
+.lock-card p { color: var(--ink-soft, #6b5b52); font-size: .92rem; margin: 0 0 16px; }
+.lock-card input {
+  width: 100%; padding: 14px 16px; font-size: 1.4rem; letter-spacing: 8px; text-align: center;
+  border: 2px solid var(--line, #efe2d8); border-radius: 12px; margin-bottom: 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif; outline: none;
+}
+.lock-card input:focus { border-color: var(--red, #c43c12); }
+.lock-err { color: #c0392b; font-size: .85rem; margin: 10px 0 0; }
+
+/* ---- Modal pesanan terkirim ---- */
+.modal-success { text-align: center; max-width: 360px; }
+.success-emoji { font-size: 56px; line-height: 1; margin: 4px 0 10px; }
+.modal-success h2 { font-family: 'Fraunces', serif; color: var(--red, #c43c12); margin: 0 0 8px; }
+.success-body { color: var(--ink-soft, #6b5b52); margin: 0 0 20px; font-size: .95rem; }
+.success-actions { display: flex; flex-direction: column; gap: 10px; }
+.success-actions .btn-secondary { background: var(--bg, #faf4ef); }
