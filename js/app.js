@@ -294,6 +294,36 @@ function submitOrder(e) {
   const nama = $('#custName').value.trim();
   const catatan = $('#custNote').value.trim();
 
+  if (!nama) {
+    toast('Isi nama dulu ya 🙏');
+    $('#custName').focus();
+    return;
+  }
+
+  const items = entries.map(([id, qty]) => ({
+    id, nama: namaById(id), harga: hargaById(id), qty,
+  }));
+
+  // Simpan ke cloud (masuk antrian kasir, status 'baru')
+  const order = {
+    id: Store.nextId(),
+    ts: new Date().toISOString(),
+    items,
+    subtotal: cartTotal(),
+    diskon: 0,
+    total: cartTotal(),
+    bayar: 0,
+    kembalian: 0,
+    nama,
+    meja: state.meja || '',
+    catatan,
+    order_type: state.orderType,
+    metode: '',
+    status: 'baru',
+    origin: 'app',
+  };
+  Store.saveOrder(order);
+
   const lines = [];
   lines.push(`*PESANAN ${CONFIG.namaWarung.toUpperCase()}*`);
   lines.push('');
@@ -311,7 +341,7 @@ function submitOrder(e) {
   const url = `https://wa.me/${CONFIG.waNomor}?text=${encodeURIComponent(lines.join('\n'))}`;
   window.open(url, '_blank');
 
-  toast('Membuka WhatsApp… 🚀');
+  toast('Pesanan masuk ke kasir ✅');
   state.cart = {};
   setTimeout(() => { closeCart(); refreshAll(); }, 600);
 }

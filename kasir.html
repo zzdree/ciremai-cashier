@@ -23,6 +23,7 @@
       </div>
       <nav class="topbar-actions">
         <button class="tab-btn active" data-view="kasir">🛒 Transaksi</button>
+        <button class="tab-btn" data-view="pesanan">📥 Pesanan <span class="tab-badge" id="pesananBadge" hidden>0</span></button>
         <button class="tab-btn" data-view="riwayat">📜 Riwayat</button>
         <button class="tab-btn" data-view="menu">📋 Menu</button>
         <button class="tab-btn" data-view="qr">🔳 QR Meja</button>
@@ -75,6 +76,21 @@
           <div class="change-line bad" id="changeLine" hidden>
             <span>Kembalian</span><span id="changeVal">Rp 0</span>
           </div>
+
+          <div id="orderContext" class="order-ctx" hidden></div>
+
+          <div class="field">
+            <label>Metode Pembayaran</label>
+            <div class="metode-row">
+              <label class="metode-opt"><input type="radio" name="metode" value="cash" checked /> 💵 Cash / Tunai</label>
+              <label class="metode-opt"><input type="radio" name="metode" value="qris" /> 📱 QRIS (kertas warung)</label>
+            </div>
+          </div>
+
+          <label class="piutang-row">
+            <input type="checkbox" id="cbPiutang" />
+            <span>💳 Bayar Nanti (Piutang) — dicatat, belum lunas</span>
+          </label>
 
           <button class="btn-pay" id="btnBayar" disabled>💰 Bayar & Cetak</button>
         </div>
@@ -129,6 +145,30 @@
     </div>
   </section>
 
+  <!-- ============ VIEW: PESANAN (ANTrian) ============ -->
+  <section class="view" id="view-pesanan" style="max-width:1080px;margin:0 auto;padding:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+      <h2 style="font-size:1.2rem;">📥 Pesanan Masuk dari Pelanggan</h2>
+      <button class="chip" id="btnRefreshPesanan" style="margin:0;">🔄 Segarkan</button>
+    </div>
+    <div id="pesananList"></div>
+  </section>
+
+  <!-- ============ MODAL KONFIRMASI BAYAR ============ -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal" style="max-width:420px;">
+      <div class="modal-head">
+        <h2>✋ Pastikan Pesanan Benar</h2>
+        <button class="modal-close" id="btnCloseConfirm" aria-label="Tutup">✕</button>
+      </div>
+      <div id="confirmBody" style="text-align:left;margin:10px 0 18px;"></div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-secondary" id="btnCancelConfirm" style="flex:1;">Batal</button>
+        <button class="btn-primary" id="btnProceedPay" style="flex:2;">✔️ Ya, Lanjut Bayar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ MODAL STRUK ============ -->
   <div class="modal-overlay" id="receiptModal">
     <div class="modal" style="max-width:420px;text-align:center;">
@@ -138,7 +178,7 @@
       </div>
       <p style="color:var(--green);font-weight:800;margin-bottom:14px;" id="kembalianMsg"></p>
       <div class="receipt-wrap"><div class="receipt" id="receiptPaper"></div></div>
-      <button class="btn-primary" onclick="window.print()">🖨️ Cetak Struk</button>
+      <button class="btn-primary" id="btnPrintReceipt">🖨️ Cetak Struk (PDF)</button>
       <button class="btn-secondary modal-close2" id="btnDoneReceipt">Selesai — Transaksi Baru</button>
     </div>
   </div>

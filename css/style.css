@@ -710,6 +710,112 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
-    scroll-behavior: auto !important;
-  }
+
+/* ============================================================
+   ANTrian PESANAN (dari pelanggan)
+   ============================================================ */
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.order-card {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 18px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 18px rgba(60,20,10,.06);
+  animation: pop .25s ease;
+}
+.oc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.oc-name { font-weight: 800; font-size: 1.05rem; }
+.oc-meta { color: var(--ink-soft); font-size: .85rem; margin-top: 2px; }
+.oc-items { margin: 12px 0 6px; display: grid; gap: 4px; }
+.oc-item { display: flex; justify-content: space-between; font-size: .92rem; }
+.oc-note {
+  background: #fff7ed;
+  border-left: 3px solid var(--orange);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: .85rem;
+  color: #9a3412;
+  margin-bottom: 8px;
+}
+.oc-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+.oc-total { font-weight: 800; color: var(--red); font-size: 1.1rem; }
+.status-tag {
+  font-size: .75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.status-tag.new { background: #fef3c7; color: #92400e; }
+.status-tag.on { background: #dbeafe; color: #1e40af; }
+
+.order-ctx {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: .88rem;
+  color: #9a3412;
+  margin-bottom: 10px;
+}
+.metode-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.metode-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: .9rem;
+  cursor: pointer;
+}
+.metode-opt input { accent-color: var(--red); }
+.piutang-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #fef2f2;
+  border: 1.5px dashed #fca5a5;
+  border-radius: 12px;
+  font-size: .9rem;
+  cursor: pointer;
+}
+.piutang-row input { width: 18px; height: 18px; accent-color: var(--red); }
+
+/* Print struk sebagai PDF */
+@media print {
+  body * { visibility: hidden; }
+  #receiptModal, #receiptModal * { visibility: visible; }
+  #receiptModal { position: absolute; inset: 0; background: #fff; }
+  .modal { box-shadow: none; max-width: 100% !important; }
+  #receiptModal .btn-primary, #receiptModal .btn-secondary { display: none !important; }
 }

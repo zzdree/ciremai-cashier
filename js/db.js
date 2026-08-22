@@ -51,5 +51,48 @@ const DB = (() => {
     }
   }
 
-  return { aktif, simpan, hariIni };
+  // Ambil order dari pelanggan yang belum selesai (antrian kasir)
+  async function ambilOrderBaru() {
+    if (!aktif()) return [];
+    try {
+      const res = await fetch(
+        `${cfg().url}/rest/v1/${TABEL}?select=*&status=in.(baru,diproses)&order=ts.asc`,
+        { headers: headers() }
+      );
+      if (!res.ok) return [];
+      return await res.json();
+    } catch (e) {
+      console.warn('[DB] gagal ambil order:', e);
+      return [];
+    }
+  }
+
+  // Update satu order (status, metode, pembayaran)
+  async function updateOrder(id, patch) {
+    if (!aktif()) return false;
+    try {
+      const res = await fetch(`${cfg().url}/rest/v1/${TABEL}?id=eq.${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        headers: { ...headers(), 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ ...patch, updated_at: new Date().toISOString() }),
+      });
+      return res.ok;
+    } catch (e) {
+      console.warn('[DB] gagal update order:', e);
+      return false;
+    }
+  }
+
+  // Ambil satu order by id
+  async function ambilOrderById(id) {
+    if (!aktif()) return null;
+    try {
+      const res = await fetch(`${cfg().url}/rest/v1/${TABEL}?id=eq.${encodeURIComponent(id)}&select=*&limit=1`, { headers: headers() });
+      if (!res.ok) return null;
+      const a = await res.json();
+      return a[0] || null;
+    } catch { return null; }
+  }
+
+  return { aktif, simpan, hariIni, ambilOrderBaru, updateOrder, ambilOrderById };
 })();

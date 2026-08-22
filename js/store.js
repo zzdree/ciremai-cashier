@@ -51,6 +51,26 @@ const Store = {
     return `TRX-${ymd}-${String(c.n).padStart(3, '0')}`;
   },
 
+  // ---- Order dari pelanggan ----
+  saveOrder(o) {
+    // Simpan ke localStorage sebagai backup + ke cloud
+    if (typeof DB !== 'undefined' && DB.aktif()) DB.simpan(o);
+    return o;
+  },
+
+  // Order yang sedang dikerjakan kasir (diambil dari antrian)
+  KEYS_ORDER: 'ciremai_current_order',
+  getCurrentOrder() {
+    try { return JSON.parse(localStorage.getItem(this.KEYS_ORDER)); }
+    catch { return null; }
+  },
+  setCurrentOrder(o) {
+    localStorage.setItem(this.KEYS_ORDER, JSON.stringify(o));
+  },
+  clearCurrentOrder() {
+    localStorage.removeItem(this.KEYS_ORDER);
+  },
+
   // ---- Util ----
   rupiah(n) {
     return 'Rp ' + Number(n).toLocaleString('id-ID');

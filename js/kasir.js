@@ -20,6 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
   updatePosUI();
   bindReceiptModal();
   $('#btnPrintQr')?.addEventListener('click', () => window.print());
+  bindPesanan();
+  bindConfirm();
+  $('#btnPrintReceipt').addEventListener('click', () => window.print());
+  // Muat antrian pesanan saat buka
+  renderPesanan();
 
   // Tutup modal dengan Esc
   document.addEventListener('keydown', (e) => {
@@ -42,11 +47,91 @@ function bindTabs() {
     if (view === 'riwayat') renderRiwayat();
     if (view === 'menu') renderMenuManage();
     if (view === 'qr') renderQr();
+    if (view === 'pesanan') renderPesanan();
   };
   $$('.tab-btn[data-view]').forEach((btn) => {
     btn.addEventListener('click', () => showView(btn.dataset.view));
   });
 }
+
+// ---------- ANTrian PESANAN (dari pelanggan) ----------
+let daftarPesanan = [];
+
+function renderPesanan() {
+  const list = $('#pesananList');
+  if (!list) return;
+  if (!DB.aktif()) {
+    list.innerHTML = `<div class="cart-empty"><div class="big">📡</div>Database offline.<br />Cek koneksi Supabase di config.js</div>`;
+    $('#pesananBadge').hidden = true;
+    return;
+  }
+  DB.ambilOrderBaru().then((rows) => {
+    daftarPesanan = rows;
+    const badge = $('#pesananBadge');
+    badge.textContent = rows.length;
+    badge.hidden = rows.length === 0;
+
+    if (!rows.length) {
+      list.innerHTML = `<div class="cart-empty"><div class="big">📭</div>Belum ada pesanan dari pelanggan.</div>`;
+      return;
+    }
+    list.innerHTML = rows.map((o) => {
+      const items = (o.items || []).map((i) => `
+        <div class="oc-item"><span>${i.qty}× ${i.nama}</span><span>${Store.rupiah(i.harga * i.qty)}</span></div>`).join('');
+      const waktu = new Date(o.ts).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      const statusTag = o.status === 'diproses'
+        ? '<span class="status-tag on">⏳ Diproses</span>'
+        : '<span class="status-tag new">🆕 Baru</span>';
+      return `
+        <div class="order-card" data-id="${o.id}">
+          <div class="oc-head">
+            <div>
+              <div class="oc-name">👤 ${o.nama || 'Tanpa nama'}</div>
+              <div class="oc-meta">🕐 ${waktu} · ${o.order_type || 'makan di tempat'}${o.meja ? ' · Meja ' + o.meja : ''}</div>
+            </div>
+            ${statusTag}
+          </div>
+          <div class="oc-items">${items}</div>
+          ${o.catatan ? `<div class="oc-note">📝 ${o.catatan}</div>` : ''}
+          <div class="oc-foot">
+            <div class="oc-total">${Store.rupiah(o.total || 0)}</div>
+            <button class="btn-primary oc-take" data-take="${o.id}">➡️ Ambil & Proses</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    list.querySelectorAll('[data-take]').forEach((b) => {
+      b.addEventListener('click', () => takeOrder(b.dataset.take));
+    });
+  });
+}
+
+function bindPesanan() {
+  $('#btnRefreshPesanan')?.addEventListener('click', renderPesanan);
+}
+
+function takeOrder(id) {
+  const o = daftarPesanan.find((x) => String(x.id) === String(id));
+  if (!o) return;
+  pos.cart = {};
+  (o.items || []).forEach((i) => { pos.cart[i.id] = i.qty; });
+  DB.updateOrder(id, { status: 'diproses' });
+  Store.setCurrentOrder({ ...o, status: 'diproses' });
+
+  $('#orderContext').hidden = false;
+  $('#orderContext').innerHTML = `📥 Pesanan <b>${o.nama || ''}</b> (${o.order_type || ''}${o.meja ? ' · Meja ' + o.meja : ''}) — keranjang sudah terisi. Tambah item jika kurang, lalu bayar.`;
+
+  $$('.tab-btn[data-view]').forEach((b) => b.classList.toggle('active', b.dataset.view === 'kasir'));
+  $('#view-kasir-wrap').style.display = '';
+  $$('.view').forEach((v) => v.classList.remove('active'));
+  $('#view-kasir').classList.add('active');
+
+  renderPosCart();
+  updatePosUI();
+  toast('Pesanan diambil ✅');
+}
+
+
 
 // ---------- QR MEJA ----------
 function renderQr() {
@@ -148,8 +233,15 @@ function updatePosUI() {
   $('#posTotal').textContent = Store.rupiah(total);
 
   const bayar = Number($('#posBayar').value) || 0;
+  const piutang = $('#cbPiutang').checked;
   const line = $('#changeLine');
   const btn = $('#btnBayar');
+
+  if (piutang) {
+    line.hidden = true;
+    btn.disabled = Object.keys(pos.cart).length === 0;
+    return;
+  }
 
   if (bayar <= 0 || total <= 0) {
     line.hidden = true;
@@ -182,6 +274,8 @@ function bindPos() {
   $('#posDiskon').addEventListener('input', updatePosUI);
   $('#posBayar').addEventListener('input', updatePosUI);
 
+  $('#cbPiutang').addEventListener('change', updatePosUI);
+
   $$('.money-btn').forEach((b) => b.addEventListener('click', () => {
     const v = b.dataset.money;
     $('#posBayar').value = v === 'pas' ? calcTotal() : v;
@@ -210,6 +304,9 @@ function doBayar() {
   const items = Object.entries(pos.cart).map(([id, qty]) => ({
     id, nama: namaById(id), harga: hargaById(id), qty,
   }));
+  const metode = ($('input[name="metode"]:checked') || {}).value || 'cash';
+  const piutang = $('#cbPiutang').checked;
+
   const trx = {
     id: Store.nextId(),
     ts: new Date().toISOString(),
@@ -217,20 +314,80 @@ function doBayar() {
     subtotal: calcSubtotal(),
     diskon,
     total,
-    bayar,
-    kembalian: bayar - total,
+    bayar: piutang ? 0 : bayar,
+    kembalian: piutang ? 0 : bayar - total,
+    metode,
+    status: piutang ? 'piutang' : 'lunas',
+    origin: 'kasir',
   };
-  Store.addTrx(trx);
 
-  $('#kembalianMsg').textContent = trx.kembalian > 0
-    ? `Kembalian: ${Store.rupiah(trx.kembalian)}`
-    : 'Uang pas. Makasih! 🙏';
+  // Jika ini berasal dari pesanan pelanggan, sambungkan ID asli
+  const cur = Store.getCurrentOrder();
+  if (cur && cur.id) {
+    trx.id = cur.id;
+    trx.origin = cur.origin || 'kasir';
+    trx.nama = cur.nama;
+    trx.meja = cur.meja;
+    trx.catatan = cur.catatan;
+    trx.order_type = cur.order_type;
+  }
+
+  // Simpan ke cloud (status lunas/piutang)
+  Store.addTrx(trx);
+  if (cur && cur.id) DB.updateOrder(cur.id, { status: trx.status, metode, total: trx.total });
+  Store.clearCurrentOrder();
+
+  $('#kembalianMsg').textContent = piutang
+    ? '📝 Dicatat sebagai PIUTANG (belum lunas)'
+    : (trx.kembalian > 0 ? `Kembalian: ${Store.rupiah(trx.kembalian)}` : 'Uang pas. Makasih! 🙏');
   $('#receiptPaper').innerHTML = receiptHTML(trx);
   openReceipt();
 
   resetPos();
   renderMenuManage();
+  renderPesanan();
 }
+
+function processPay() {
+  // Dipanggil dari modal konfirmasi
+  const total = calcTotal();
+  const bayar = Number($('#posBayar').value) || 0;
+  if (!Object.keys(pos.cart).length) { toast('Keranjang kosong'); return; }
+  if (!$('#cbPiutang').checked && bayar < total) { toast('Uang kurang 😅'); return; }
+  doBayar();
+}
+
+function bindConfirm() {
+  $('#btnBayar').addEventListener('click', () => {
+    const total = calcTotal();
+    const bayar = Number($('#posBayar').value) || 0;
+    const piutang = $('#cbPiutang').checked;
+    if (!Object.keys(pos.cart).length) { toast('Keranjang kosong'); return; }
+    if (!piutang && bayar < total) { toast('Uang kurang 😅'); return; }
+
+    const items = Object.entries(pos.cart).map(([id, qty]) => `${qty}× ${namaById(id)}`).join(', ');
+    const metode = ($('input[name="metode"]:checked') || {}).value || 'cash';
+    const cur = Store.getCurrentOrder();
+    $('#confirmBody').innerHTML = `
+      <div style="background:var(--bg);border-radius:12px;padding:12px 14px;margin-bottom:10px;">
+        <div style="font-weight:700;margin-bottom:6px;">${cur && cur.nama ? '📥 Pesanan: ' + cur.nama : 'Struk Kasir'}</div>
+        <div style="color:var(--ink-soft);font-size:.9rem;">${items}</div>
+      </div>
+      <div class="r-row"><span>Total</span><span>${Store.rupiah(total)}</span></div>
+      <div class="r-row"><span>Metode</span><span>${metode === 'qris' ? '📱 QRIS' : '💵 Cash'}</span></div>
+      <div class="r-row"><span>Status</span><span>${piutang ? '💳 Piutang (nanti)' : '✅ Lunas'}</span></div>`;
+    $('#confirmModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  const close = () => { $('#confirmModal').classList.remove('open'); document.body.style.overflow = ''; };
+  $('#btnCloseConfirm').addEventListener('click', close);
+  $('#btnCancelConfirm').addEventListener('click', close);
+  $('#confirmModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) close(); });
+  $('#btnProceedPay').addEventListener('click', () => { close(); processPay(); });
+}
+
+
 
 function receiptHTML(t) {
   const waktu = new Date(t.ts).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
