@@ -62,71 +62,89 @@
     </section>
 
     <aside class="cart-panel" aria-label="Keranjang dan Pembayaran Kasir">
-      <div class="panel panel-pad">
+      <div class="panel pos-receipt-panel">
         <div class="pos-cart-head">
-          <h2>🛒 Struk Kasir</h2>
-          <button class="btn-clear" id="btnClearPos" title="Bersihkan struk" aria-label="Bersihkan struk transaksi">Bersihkan</button>
+          <div class="pos-cart-title">
+            <span class="pos-cart-icon" aria-hidden="true">🧾</span>
+            <h2>Struk Kasir</h2>
+          </div>
+          <button class="btn-clear-pos" id="btnClearPos" title="Bersihkan struk" aria-label="Bersihkan struk transaksi">
+            🗑️ Bersihkan
+          </button>
         </div>
 
         <div id="orderContext" class="order-context" hidden aria-live="polite"></div>
 
         <div class="pos-cart-list" id="posCartList" aria-label="Daftar item di kasir"></div>
 
-        <div class="pos-calc">
-          <div class="pos-row">
-            <span>Subtotal</span>
-            <span id="posSubtotal" class="num">Rp 0</span>
+        <!-- Perhitungan & Pembayaran POS -->
+        <div class="pos-calc-card">
+          <div class="pos-summary-rows">
+            <div class="pos-row">
+              <span class="row-label">Subtotal</span>
+              <span id="posSubtotal" class="row-val">Rp 0</span>
+            </div>
+
+            <div class="pos-row align-center">
+              <span class="row-label">Diskon</span>
+              <div class="currency-input-wrap">
+                <span class="curr-tag">Rp</span>
+                <input type="number" id="posDiskon" min="0" step="500" placeholder="0" class="curr-input" aria-label="Nominal diskon rupiah" />
+              </div>
+            </div>
+
+            <div class="pos-row total-highlight">
+              <span class="total-label">TOTAL AKHIR</span>
+              <span id="posTotal" class="total-val">Rp 0</span>
+            </div>
           </div>
 
-          <div class="pos-row">
-            <span>Diskon (Rp)</span>
-            <input type="number" id="posDiskon" min="0" step="500" placeholder="0" class="input-inline" aria-label="Nominal diskon rupiah" />
-          </div>
-
-          <div class="pos-row total-row">
-            <span>TOTAL</span>
-            <span id="posTotal" class="num-big red">Rp 0</span>
-          </div>
-
-          <!-- Pembayaran -->
+          <!-- Bagian Metode & Bayar -->
           <div class="pay-section">
             <label class="pay-label" id="labelMetodeBayar">Metode Pembayaran</label>
-            <div class="metode-group" role="radiogroup" aria-labelledby="labelMetodeBayar">
-              <label class="metode-opt">
+            <div class="metode-segmented" role="radiogroup" aria-labelledby="labelMetodeBayar">
+              <label class="metode-tab">
                 <input type="radio" name="metode" value="cash" checked />
-                <span>💵 Tunai (Cash)</span>
+                <span class="metode-tab-btn">💵 Tunai</span>
               </label>
-              <label class="metode-opt">
+              <label class="metode-tab">
                 <input type="radio" name="metode" value="qris" />
-                <span>📱 QRIS Kertas</span>
+                <span class="metode-tab-btn">📱 QRIS</span>
               </label>
             </div>
 
-            <label class="pay-label" for="posBayar" style="margin-top:10px;">Uang Diterima</label>
-            <input type="number" id="posBayar" min="0" step="1000" placeholder="Nominal uang diterima…" class="input-block" />
+            <div class="pay-input-block" id="blockTunai">
+              <div class="pay-input-head">
+                <label class="pay-label" for="posBayar">Uang Diterima</label>
+              </div>
+              <div class="currency-input-wrap large">
+                <span class="curr-tag">Rp</span>
+                <input type="number" id="posBayar" min="0" step="1000" placeholder="0" class="curr-input" aria-label="Uang diterima" />
+              </div>
 
-            <div class="quick-money" id="quickMoney" aria-label="Pilihan cepat nominal uang">
-              <button type="button" class="money-btn" data-money="pas">Pas</button>
-              <button type="button" class="money-btn" data-money="10000">10rb</button>
-              <button type="button" class="money-btn" data-money="20000">20rb</button>
-              <button type="button" class="money-btn" data-money="50000">50rb</button>
-              <button type="button" class="money-btn" data-money="100000">100rb</button>
+              <div class="quick-money" id="quickMoney" aria-label="Pilihan cepat nominal uang">
+                <button type="button" class="money-btn" data-money="pas">Uang Pas</button>
+                <button type="button" class="money-btn" data-money="10000">10k</button>
+                <button type="button" class="money-btn" data-money="20000">20k</button>
+                <button type="button" class="money-btn" data-money="50000">50k</button>
+                <button type="button" class="money-btn" data-money="100000">100k</button>
+              </div>
             </div>
 
-            <div class="pos-row change-row" id="changeLine" hidden aria-live="polite">
-              <span>Kembalian</span>
-              <span id="posKembalian" class="num-big green">Rp 0</span>
+            <div class="change-line-card" id="changeLine" hidden aria-live="polite">
+              <span class="change-lbl">Kembalian</span>
+              <span id="changeVal" class="change-val">Rp 0</span>
             </div>
 
             <!-- Piutang / Kasbon -->
-            <label class="piutang-row" style="margin-top:10px;">
+            <label class="piutang-card">
               <input type="checkbox" id="cbPiutang" />
-              <span>Dicatat sebagai <b>Piutang / Kasbon</b> (belum bayar)</span>
+              <span class="piutang-text">Catat sebagai <b>Kasbon / Piutang</b></span>
             </label>
           </div>
 
-          <button class="btn-primary btn-checkout" id="btnBayar" disabled aria-label="Simpan transaksi dan cetak struk">
-            💰 Simpan & Cetak Struk
+          <button class="btn-checkout-pos" id="btnBayar" disabled aria-label="Simpan transaksi dan cetak struk">
+            <span>💰 Simpan & Cetak Struk</span>
           </button>
         </div>
       </div>

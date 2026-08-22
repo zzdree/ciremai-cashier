@@ -399,6 +399,13 @@ function bindPos() {
 
   $('#cbPiutang').addEventListener('change', updatePosUI);
 
+  $$('input[name="metode"]').forEach((r) => r.addEventListener('change', () => {
+    if (r.value === 'qris' && !$('#cbPiutang').checked) {
+      $('#posBayar').value = calcTotal();
+    }
+    updatePosUI();
+  }));
+
   $$('.money-btn').forEach((b) => b.addEventListener('click', () => {
     const v = b.dataset.money;
     $('#posBayar').value = v === 'pas' ? calcTotal() : v;
