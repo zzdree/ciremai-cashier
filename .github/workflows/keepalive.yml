@@ -16,8 +16,8 @@ jobs:
     steps:
       - name: Ping Supabase Database
         env:
-          DEFAULT_URL: "https://lnxprlvmyhqxkzarrzac.supabase.co"
-          DEFAULT_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxueHBybHZteWhxeGt6YXJyemFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MDAwMDIsImV4cCI6MjEwMjk3NjAwMn0.fb4njNTFQZMcZPuvHE96i8zfX7CXCTGVN10A6wYDZUs"
+          DEFAULT_URL: ${{ secrets.SUPABASE_URL }}
+          DEFAULT_KEY: ${{ secrets.SUPABASE_KEY }}
           PROJECTS: ${{ secrets.SUPABASE_PROJECTS }}
         run: |
           if [ -n "$PROJECTS" ]; then
